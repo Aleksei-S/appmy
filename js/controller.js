@@ -12,15 +12,6 @@ jobPos.controller('posCtrl', ['$scope','$http', function($scope,$http){
 
 
 
-
-
-
-
-
-
-
-
-
 function tableRow (name="", total="0", CMP="0") {
   this.name = name;
   this.total = total;
@@ -29,48 +20,48 @@ function tableRow (name="", total="0", CMP="0") {
 
 
 $scope.arrRow = [];
-$scope.arrRow.push(new tableRow("tableName","tableTotal","tableCMP"));
-$scope.arrRow.push(new tableRow("tableName2222","tableTotal2222","tableCMP2222"));
-$scope.arrRow.push(new tableRow("tableName3333","tableTotal3333","tableCMP3333"));
+$scope.arrRow.push(new tableRow("table","table","table"));
+$scope.arrRow.push(new tableRow("table2222","table2222","table2222"));
+$scope.arrRow.push(new tableRow("table3333","table3333","table3333"));
 
 
+$scope.arrdb = [];
 
-
+$scope.json = angular.toJson($scope.arrRow);
 
 
 
 
 $scope.posSave = function (){
-
  $scope.response={};
- $http.post("/ma",{ message : "message"}).then(function success (response) {
-	 console.log(response);
+ $http.post("/save",$scope.json).then(function success (response) {
+	 console.log(response.data);
  });
-
-// $http.post('request-url',  { 'message' : "messageGGGGGGGGGG" });
-
-
-
-
-
-
-
-
-
-
-
 };
 
 
 $scope.posLoad = function (){
+ $http.post("/load",$scope.json).then(function success (response) {
+	 $scope.arrdb = angular.fromJson(response.data);
+	  console.log($scope.arrdb[0].time);
+	 // $scope.temp = angular.fromJson($scope.data.response);
+
+ });
 
 };
 
+$scope.posChange = function ($event,db){
+$scope.arrRow = this.rowDB.table;	
+console.log(db);
+console.log(this.rowDB.table);
+};
 
+$scope.posDel = function ($event,db){
+$scope.arrRow = this.rowDB.table;	
+console.log(db);
+console.log(this.rowDB.table);
 
-
-
-
+};
 
 
 
