@@ -1,0 +1,23 @@
+{
+  "name": "lehaPOS",
+  "authors": [
+    "Aleksei-S <mz-43@mail.ru>"
+
+  ],
+  "description": "",
+  "main": "app",
+  "license": "MIT",
+  "homepage": "index.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  
+  "dependencies": {
+    "angular": "^1.6.4",
+    "bootstrap": "^3.3.7"
+  }
+}

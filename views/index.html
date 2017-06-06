@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html ng-app = "pos">
+<head>
+	<meta charset="utf-8">
+	<title>title</title>
+	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="/views/css/app.css" />
+	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="/bower_components/angular/angular.js"></script>
+
+
+</head>
+<body ng-controller="posCtrl">
+	<div class="col-md-9 col-sm-11 col-sm-offset-1">
+		<div class="row">
+			<table class="table table-bordered table-hover table-condensed">
+				<tr ng-repeat="row in arrRow">
+					<td>{{row.name}}</td>
+					<td>{{row.total}}</td>
+					<td>{{row.CMP}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<div class="row">
+	<div class="col-md-9 col-sm-10 col-sm-offset-2">
+		<div class="btn-group">
+			<button class="btn btn-default btn-sm" ng-click="posSave()">Загрузить</button>
+			<button class="btn btn-default btn-sm" ng-click="posLoad()">Выгрузить</button>
+		</div>
+	</div>
+	</div>
+
+	<script src="js/controller.js"></script>
+</body>
+</html>
+
