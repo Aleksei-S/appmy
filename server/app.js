@@ -29,11 +29,11 @@ app.use(bodyParser.json());
 app.use('/js', express.static(path.dirname(__dirname)+'/js'));
 app.use('/views', express.static(path.dirname(__dirname)+'/views'));
 app.use('/bower_components', express.static(path.dirname(__dirname)+'/bower_components'));
-app.use('/js', express.static(path.dirname(__dirname)+'/js'));
 
 
 
-app.get('*', function(req, res){
+
+app.get('/', function(req, res){
 	res.sendFile(path.dirname(__dirname) + '/views/index.html');
 });
 
@@ -73,20 +73,70 @@ app.post('/load', function(req, res){
 	});   
 });
 
-app.post('/del', function(req, res){
+
+
+
+
+app.get('/del', function(req, res){
 	// console.log(req.body);
 	// res.send(req.body);
-	POS.find({},function(err,docs){
-		if (err) {
-			console.log(err);
-		} else {
-			res.send(docs);
-		}
-	});   
+	// POS.find({},function(err,docs){
+	// 	if (err) {
+	// 		console.log(err);
+	// 	} else {
+	// 		res.send(docs);
+	// 	}
+	// }); 
+//let a = req.body;
+// console.log(req.body.id);
+// POS.findOneAndRemove({_id : req.body.id}, function (err,offer){
+//     //res.redirect('/newsfeed');
+//  });
+
+//{_id : new mongoose.mongo.ObjectID(req.params.id)}
+console.log("app");
+console.log(req);
+//findOneAndRemove({ _id: id }, options, callback);
+// POS.findByIdAndRemove( req.body.id, function (err, todo) {  
+//     // We'll create a simple object to send back with a message and the id of the document that was removed
+//     // You can really do this however you want, though.
+//     if (err) {
+//     	console.log(err);
+//     } else {
+//     	var response = {
+//     		message: "Todo successfully deleted",
+//     	};
+//     	res.send("Todo successfully deleted");
+//     }
+
+// });
+
+
 });
 
 
 
+
+
+
+app.get('/makeDelete', function(req, res) {
+console.log("I received a command!");
+console.log(req.query._id); 
+
+POS.findByIdAndRemove( req.query._id, function (err, todo) {  
+    // We'll create a simple object to send back with a message and the id of the document that was removed
+    // You can really do this however you want, though.
+    if (err) {
+    	console.log(err);
+    } else {
+    	var response = {
+    		message: "Todo successfully deleted",
+    	};
+    	res.send("Todo successfully deleted");
+    }
+
+});
+});
 
 
 
