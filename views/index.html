@@ -1,67 +1,167 @@
 <!DOCTYPE html>
-<html ng-app = "pos">
+<html ng-app="jobPos">
 <head>
 	<meta charset="utf-8">
 	<title>title</title>
-	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" href="/views/css/app.css" />
-	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-	<script src="/bower_components/angular/angular.js"></script>
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script src="bower_components/angular/angular.js"></script>
 
 
 </head>
-<body ng-controller="posCtrl">
-	<br>
-	<div class="col-md-9 col-sm-11 col-sm-offset-1">
-		<div class="row">
-			<table class="table table-bordered table-hover table-condensed">
-				<tr ng-repeat="row in arrRow">
-					<td ng-repeat="(key, value) in row"  ng-click="clickshowInput(row, key);"><input type="text" class="form-control input-sm" id="edit" ng-if="showInput" ng-blur="inputBlur(row, key)">{{row[key]}}</td>
+<body ng-controller="PosCtrl">
 
-				</tr>
-			</table>
-		</div>
-	</div>
+	<div id="app"></div>
 
-	<div class="row">
-		<div class="col-md-9 col-sm-10 col-sm-offset-2">
-			<div class="btn-group">
-				<button class="btn btn-default btn-sm" ng-click="posSave()">Загрузить</button>
-				<button class="btn btn-default btn-sm" ng-click="posLoad()">Выгрузить</button>
-				<button class="btn btn-default btn-sm" ng-click="posDel()">Delete</button>
+	<div class="container">
+		<section class = "inputData">
+
+			<div class="row">
+				<div class="col-md-6 col-sm-11">
+					<div class="row">
+						<div class="col-md-4 col-sm-12 ">
+							<h5 class="text-nowrap">Наименование объекта:</h5>
+						</div> 
+						<div class="col-md-8 col-sm-12">
+							<div class="col-xs-12 nopadding">
+								<textarea class="form-control input-sm" rows="1" placeholder="Наименование объекта"></textarea>
+							</div>					
+						</div>
+					</div> 
+					<div class="row">
+						<div class="col-md-4 col-sm-12">
+							<h5 class="text-nowrap">Начало строительства:</h5>
+						</div> 
+						<div class="col-md-8 col-sm-12">
+							<div class="col-xs-6 nopadding">
+								<input type="month" ng-model="dateBeginBuilding" class="form-control input-sm">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-sm-12">
+							<h5 class="text-nowrap">Продолжительность:</h5>
+						</div>
+						<div class="col-md-8 col-sm-12">
+							<div class="col-xs-3 nopadding">
+								<input type="text" class="form-control input-sm" ng-model="timeBuilding" check-time-building placeholder="мес">
+							</div>
+							<div class="col-xs-9">
+								<h6>месяцев</h6>
+							</div>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-sm-12">
+							<h5 class="text-nowrap">Распределение процентов:</h5>
+						</div> 
+						<div class="col-md-8 col-sm-12">
+							<div class="col-xs-8 nopadding">
+								<input type="text" class="form-control input-sm ">
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+
+
+
+				<div class="col-md-5 col-sm-11 ">
+					<div class="wel">
+						<div class="row bodycontainer ">
+							<table class="table table-bordered table-hover table-condensed ">
+								<tr>
+									<td>gggggg</td>
+									<td>gggggg</td>
+									<td>gggggg</td>
+								</tr>
+								<tr>
+									<td>gggggg</td>
+									<td>gggggg</td>
+									<td>gggggg</td>
+								</tr>
+								<tr>
+									<td>gggggg</td>
+									<td>gggggg</td>
+									<td>gggggg</td>
+								</tr>
+								<tr>
+									<td>gggggg</td>
+									<td>gggggg</td>
+									<td>gggggg</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+					<div class="row">
+
+						<div class="btn-group col-sm-offset-1">
+							<button class="btn btn-default btn-sm" ng-click="savePos">Сохранить</button>
+							<button class="btn btn-default btn-sm" ng-click="loadPos">Загрузить</button>
+							<button class="btn btn-default btn-sm">Выгрузить</button>
+							<button class="btn btn-default btn-sm">Удалить</button>
+						</div>
+
+					</div>
+
+				</div> 
 			</div>
+		</section>
+
+
+
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#panel1">Календарный план</a></li>
+			<li><a data-toggle="tab" href="#panel2">Кол-во строителей</a></li>
+			<li><a data-toggle="tab" href="#panel3">Бытовки</a></li>
+			<li><a data-toggle="tab" href="#panel4">Склады</a></li>
+			<li><a data-toggle="tab" href="#panel5">Энергоресурсы</a></li>			
+		</ul>
+
+
+
+		<div class="tab-content">
+
+
+
+			<div id="panel1" class="tab-pane fade in active">
+				<h3>Календарный план строительства</h3>
+				<table-kalendarnii> </table-kalendarnii>
+			</div>
+
+
+			<div id="panel2" class="tab-pane fade">
+				<h3>Потребность в кадрах строителей </h3>
+			</div>
+
+			<div id="panel3" class="tab-pane fade">
+				<h3>Потребность в бытовых помещениях </h3>	
+			</div>	
+			<div id="panel4" class="tab-pane fade">
+				<h3>Потребность в складских помещениях</h3>
+			</div>	
+
+			<div id="panel5" class="tab-pane fade">
+				<h3>Потребность строительства в энергоресурсах</h3>
+			</div>	
+
 		</div>
 	</div>
+</div>
 
-	
-		<br>
-		<div class="col-md-9 col-sm-11 col-sm-offset-1">
-		<div class="row">
-			<table class="table table-bordered table-hover table-condensed">
-				<tr>
-					<td>id</td>
-					<td>inner</td>
-					<td>Date</td>
-				</tr>
-				<tr ng-repeat="rowDB in arrdb track by $index" ng-click="posChange($event, $index)">
-					<td>{{rowDB._id}}</td>
-					<td>{{rowDB.table}}</td>
-					<td>{{rowDB.created}}</td>
-				</tr>
-				<div class="row">
-			</table>
-
-
-
-
-		
-	</div>
-
-
-
-
-	<script src="js/controller.js"></script>
+<script src="/js/controller.js"></script>
 </body>
 </html>
 
+<!--
+
+<tr ng-repeat="row in arrRow">
+
+	<td ng-repeat="(key, value) in row"><text-tabl text="row[key]"></text-tabl><text-tabl text="2"></text-tabl></td>
+</tr>
+
+-->

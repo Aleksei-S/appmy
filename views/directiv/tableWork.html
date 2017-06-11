@@ -1,0 +1,61 @@
+<div class="row">
+	<div class="col-sm-6 col-sm-offset-1">
+		<table class="table table-bordered table-hover">
+			<tr>
+				<td>Наименование</td>
+				<td >Ед.измерен.</td>
+				<td >Количество на период строительства</td>
+			</tr>
+			<tr>
+				<td class="tdLeft">
+					Трудоемкость работ по сводному сметному расчету
+				</td>
+				<td >
+					чел-час.
+				</td>
+				<td  ng-click="showInput2 = true; clickWorkTabl($event);" >{{ObjWorkTabl.workCapacity}}
+					<input type="text" class="form-control input-sm" id="edit2" value="" ng-if="showInput2" ng-blur="inputWorkTabl($event.target.value); this.$parent.showInput2 = false;" ></td>
+				</tr>
+				<tr>
+					<td class="tdLeft">
+						Кол-во работающих,  (Тч-час:8час:{{timeBuilding}}мес:22дн)
+					</td>
+					<td >
+						чел
+					</td>
+					<td >{{ObjWorkTabl.sumWorking()}}</td>
+				</tr>
+				<tr>
+					<td class="tdLeft">
+						в т.ч. рабочих,
+					</td>
+					<td >
+						чел
+					</td>
+					<td >{{ObjWorkTabl.working()}}</td>
+				</tr>
+				<tr>
+					<td class="tdLeft">
+						ИТР и МОП /15,5% от общего количества/
+					</td>
+					<td >
+						чел
+					</td>
+					<td >{{ObjWorkTabl.ITR()}}</td>
+				</tr>
+
+			</table>
+
+		</div>
+	</div>
+	<div class="col-sm-5">
+		<p></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-6 col-sm-offset-1">
+		<p>-число  рабочих на объекте в наиболее многочисленную смену составляет 70% от обще-го количества, т.е. {{ObjWorkTabl.workingInTheShift()}} чел.</p>
+		<p>-число ИТР, служащих и МОП в наиболее многочисленную смену составляет 80% от их общего количества, т.е. {{ObjWorkTabl.ITRInTheShift()}} чел.</p>
+		<p>-количество работающих на объекте строителей в наиболее многочисленную смену составит ({{ObjWorkTabl.workingInTheShift()+ObjWorkTabl.ITRInTheShift()}}x0,5) = {{ObjWorkTabl.sumInTheShift()}} чел. </p>
+	</div>
+</div>

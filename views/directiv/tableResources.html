@@ -1,0 +1,74 @@
+<div class="col-sm-6 col-sm-offset-1">
+	<table class="table table-bordered  table-hover  table-condensed">
+		<tr>
+			<td rowspan="2">Наименование ресурсов</td>
+			<td rowspan="2">Един. изм.</td>
+			<td rowspan="2">Коэфф.</td>
+			<td rowspan="2" ng-show="ResourcesVisible">Норма на 1 млн руб. СМР </td>
+			<td colspan="{{ResourcesTablar.length}}" ng-show="ResourcesTablar.length > 0 ">Потребность на  период строительства</td>
+		</tr>
+		<tr>
+			<td ng-repeat="td in ResourcesTablar track by $index">{{arrayYearsColdspan[$index].year}}</td>
+		</tr>
+		<tr>
+			<td class="tdLeft">Объем СМР</td>
+			<td >тыс.руб. (BRN)</td>
+			<td >2,7х1267х{{coefficient}}</td>
+			<td ng-show="ResourcesVisible">-</td>
+			<td ng-repeat="td in ResourcesTablar track by $index">{{td.summa}}</td>
+
+		</tr>
+		<tr>
+			<td class="tdLeft">Электроэнергия</td>
+			<td >ква</td>
+			<td >1,02</td>
+			<td ng-show="ResourcesVisible">{{ResourcesTablar[0].electric}}</td>
+			<td ng-repeat="td in ResourcesTablar track by $index">{{(td.summa/(2.7*1267*coefficient)*td.electric*1.02).toFixed(2)}}
+				<span ng-show="ResourcesVisible ? false : true"><br>{{td.electric}}</span></td>
+			</tr>
+			<tr>
+				<td class="tdLeft"> Топливо</td>
+				<td >тн</td>
+				<td >1,02</td>
+				<td ng-show="ResourcesVisible">{{ResourcesTablar[0].oil}}</td>
+				<td ng-repeat="td in ResourcesTablar track by $index">{{(td.summa/(2.7*1267*coefficient)*td.oil*1.02).toFixed(2)}}<span ng-show="ResourcesVisible ? false : true"><br>{{td.oil}}</span></td>
+			</tr>
+			<tr>
+				<td class="tdLeft">Пар</td>
+				<td >кг/час</td>
+				<td >1,02</td>
+				<td ng-show="ResourcesVisible">{{ResourcesTablar[0].vapor}}</td>
+				<td ng-repeat="td in ResourcesTablar track by $index">{{(td.summa/(2.7*1267*coefficient)*td.vapor*1.02).toFixed(2)}}<span ng-show="ResourcesVisible ? false : true"><br>{{td.vapor}}</span></td>
+			</tr>
+			<tr>
+				<td class="tdLeft">Сжатый воздух</td>
+				<td >шт</td>
+				<td >1,03</td>
+				<td ng-show="ResourcesVisible">{{ResourcesTablar[0].compresAir}}</td>
+				<td ng-repeat="td in ResourcesTablar track by $index">{{(td.summa/(2.7*1267*coefficient)*td.compresAir*1.03).toFixed(2)}}<span ng-show="ResourcesVisible ? false : true"><br>{{td.compresAir}}</span></td>
+			</tr>
+			<tr>
+				<td class="tdLeft">Вода на противопожарные нуж-ды</td>
+				<td >л/сек</td>
+				<td >-</td>
+				<td ng-show="ResourcesVisible">-</td>
+				<td ng-repeat="td in ResourcesTablar track by $index">{{20}}</td>
+			</tr>
+			<tr>
+				<td class="tdLeft">Вода на хоз.-питьевые нужды</td>
+				<td >л/сек</td>
+				<td >1,03</td>
+				<td ng-show="ResourcesVisible">{{ResourcesTablar[0].waterHouse}}</td>
+				<td ng-repeat="td in ResourcesTablar track by $index">{{(td.summa/(2.7*1267*coefficient)*td.waterHouse*1.03).toFixed(2)}}<span ng-show="ResourcesVisible ? false : true"><br>{{td.waterHouse}}</span></td>
+			</tr>
+			<tr>
+				<td class="tdLeft">Кислород</td>
+				<td >м3</td>
+				<td >1,03</td>
+				<td ng-show="ResourcesVisible">{{ResourcesTablar[0].oxyden}}</td>
+				<td ng-repeat="td in ResourcesTablar track by $index">{{(td.summa/(2.7*1267*coefficient)*td.oxyden*1.03).toFixed(2)}}<span ng-show="ResourcesVisible ? false : true"><br>{{td.oxyden}}</span></td>
+			</tr>
+
+
+		</table>
+	</div>
