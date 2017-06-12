@@ -1,10 +1,11 @@
 
 <div class="row">
 	<div class="btn-group col-sm-offset-1">
-	<button class="btn btn-default btn-xs" >Добавить строку</button>
-		<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></button>
-		<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span>  </button>
-		<button class="btn btn-default btn-xs">Удалить строку</button>
+	<button class="btn btn-default btn-sm">Рассчитать</button>
+	<button class="btn btn-default btn-sm" >Добавить строку</button>
+	    <button class="btn btn-default btn-sm">Удалить строку</button>
+		<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-up"></span></button>
+		<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-down"></span></button>
 	</div>
 </div>
 
@@ -26,7 +27,7 @@
 				colspan={{years.coldspan}} ng-show="timeBuilding > 0">{{years.year}}</td>
 			</tr>
 			<tr>
-				<td ng-repeat="Month in arrayMonth track by $index">{{Month.Month}}</td>
+				<td ng-repeat="Month in arrayMonth track by $index">{{Month}}</td>
 			</tr>
 
 

@@ -2,10 +2,10 @@
 	<div class="col-md-7 col-sm-12 col-sm-offset-1">
 		<div class="row">
 			<div class="col-md-5 col-sm-5 col-xs-6 ">
-				<h5 class="text-nowrap text-right">Коэффициент 2,7 х 1267 х {{coefficient}}</h5>
+				<h5 class="text-nowrap text-right">Коэффициент 2,7 х 1267 х {{objStockroom.coefficient}}</h5>
 			</div> 
 			<div class="col-md-3 col-sm-3 col-xs-3 nopadding">
-				<input type="text" class="form-control input-sm" ng-model="coefficient"  placeholder="Коэфф">
+				<input type="text" class="form-control input-sm" ng-model="objStockroom.coefficient"  placeholder="Коэфф">
 			</div>
 		</div> 
 		<div class="row">
@@ -18,35 +18,36 @@
 						<td >Объем СМР в макс. год, тыс. руб. (BRN)</td>
 						<td >Общая потребность м2</td>
 					</tr>
+
 					<tr>
 						<td class="tdLeft">Склад материально-технический отапливаемый</td>
 						<td >24,0</td>
-						<td >{{maxSummaYear}}<br>k=2,7х1267х{{coefficient}}</td>
-						<td >{{maxSummaYear == 0 ? '0' :(maxSummaYear/(2.7*1267*coefficient)*24).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear()}}<br>k=2,7х1267х{{objStockroom.coefficient}}</td>
+						<td >{{objStockroom.maxSummaYear() == 0  || objStockroom.coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*objStockroom.coefficient)*24).toFixed(2)}}</td>
 					</tr>
 					<tr>
 						<td class="tdLeft">Склад материально-технический не отапливаемый</td>
 						<td >29,0</td>
 						<td >-"-</td>
-						<td >{{maxSummaYear == 0 ? '0' :(maxSummaYear/(2.7*1267*coefficient)*29).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear() == 0 || objStockroom.coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*objStockroom.coefficient)*29).toFixed(2)}}</td>
 					</tr>
 					<tr>
 						<td class="tdLeft">Склад для хранения материалов (цемента, гипса, извести и т.д.)</td>
 						<td >21,2</td>
 						<td >-"-</td>
-						<td >{{maxSummaYear == 0 ? '0' :(maxSummaYear/(2.7*1267*coefficient)*21.2).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear() == 0  || objStockroom.coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*objStockroom.coefficient)*21.2).toFixed(2)}}</td>
 					</tr>
 					<tr>
 						<td class="tdLeft">Навес</td>
 						<td >13,0</td>
 						<td >-"-</td>
-						<td >{{maxSummaYear == 0 ? '0' :(maxSummaYear/(2.7*1267*coefficient)*13).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear() == 0  || objStockroom.coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*objStockroom.coefficient)*13).toFixed(2)}}</td>
 					</tr>
 					<tr>
 						<td class="tdLeft">Открытые площадки</td>
 						<td >300,0</td>
 						<td >-"-</td>
-						<td >{{maxSummaYear == 0 ? '0' :(maxSummaYear/(2.7*1267*coefficient)*300).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear() == 0  || objStockroom.coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*objStockroom.coefficient)*300).toFixed(2)}}</td>
 					</tr>
 
 				</table>

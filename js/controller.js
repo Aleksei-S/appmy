@@ -22,7 +22,7 @@ $scope.arrayYearsColdspan = new Array();
 
 
 
-$scope.timeBuilding = 3;
+$scope.timeBuilding = 9;
 
 
 function tableRow (arr, name="", total="0", CMP="0") {
@@ -62,7 +62,8 @@ $scope.valueCheck = function (val) {
 
 $scope.save = function (val) {
 
-  console.log($scope.table);
+
+  console.log($scope.objResources.tableRes );
 }
 
 
@@ -112,10 +113,6 @@ function tableKalendarnii() {
           this.year = year;
           this.coldspan = coldspan;
         };
-        let ObjMonth = function (Month, value) {
-          this.Month = Month;
-          this.value = value;
-        };
 
         for (var i = 0; i < parseInt(Math.ceil($scope.timeBuilding)); i++) {
 
@@ -124,7 +121,7 @@ function tableKalendarnii() {
           }
 
           timeMonth.setMonth(num++);
-          $scope.arrayMonth.push(new ObjMonth(mapMonth[timeMonth.toString().substring(4,7)],(100/$scope.timeBuilding).toFixed(0)));
+          $scope.arrayMonth.push(mapMonth[timeMonth.toString().substring(4,7)]);
           let yearNext = timeMonth.toString().substring(11,15);
 
           if (Year == yearNext) {
@@ -204,8 +201,9 @@ function calculateTable() {
       } else if (attrs.key == "name") {
         return;
       } else {
-          $scope.calculateRow($scope.$parent.$parent.Row, attrs);
-          $scope.calculateColumn($scope.$parent.$parent.Row, attrs, val);
+        $scope.calculateRow($scope.$parent.$parent.Row, attrs);
+          //$scope.calculateColumn($scope.$parent.$parent.Row, attrs, val);
+          setTimeout($scope.calculateColumn($scope.$parent.$parent.Row, attrs, val), 10);
         } 
       };
 
@@ -222,6 +220,7 @@ function calculateTable() {
             totalRow = $scope.$parent.$parent.table[i];
             continue;
           }
+          
           let sum = $scope.$parent.$parent.table[i][key].replace('-', "0");
           result = result + parseFloat(sum);
         }
@@ -233,64 +232,60 @@ function calculateTable() {
        if (!checkRowCalculate(row,$scope.rowCalculatePercent) || this.$parent.$last == true) {return;}
        let lastKey = Object.keys(row)[Object.keys(row).length - 1];
        let result = 0;
-      for (var key in row){
-          if (key == "name" || key == "total" || key == "CMP" || key == lastKey) {continue;}
-          result = result + parseFloat(row[key][attrs.calculateTable].replace('-', "0"));
+       for (var key in row){
+        if (key == "name" || key == "total" || key == "CMP" || key == lastKey) {continue;}
+        if (row[key][attrs.calculateTable] == "-") {row[key][attrs.calculateTable] = "0";}
+        result = result + parseFloat(row[key][attrs.calculateTable]);
       }
       if (attrs.calculateTable == "first") {
         row[lastKey][attrs.calculateTable] = row.total - result;
       } else {
         row[lastKey][attrs.calculateTable] = row.CMP - result;
+        console.log('calculateRow');
       }
-      };
 
-      $scope.calculateColumn = function (row,attrs,key) {
-      //console.log($scope.$parent.$parent.$parent.table);
+    };
+
+    $scope.calculateColumn = function (row,attrs,key) {
       let result = 0;
-         for (var i = 0; i < $scope.$parent.$parent.$parent.table.length; i++) {
+      let table = $scope.$parent.$parent.$parent.table;
+      let ResultRow;
+      let TotalRow;
+      for (var i = 0; i < table.length; i++) {
 
-          if (checkRowCalculate(row,["квартирный жилой"])) {
-            console.log('квартирный жилой');
-            continue;
-          }
-          if (checkRowCalculate(row,["В С Е Г О:"])) {
-            console.log('В С Е Г О:');
-            continue;
-          }
+        if (checkRowCalculate(table[i],["квартирный жилой"])) {
+          ResultRow = table[i];
+          continue;
+        }
+        if (checkRowCalculate(table[i],["В С Е Г О:"])) {
+          TotalRow = table[i];
+          continue;
+        }
+        let num = table[i][key][attrs.calculateTable];
+        if (num == "-") {num = "0";}
+        result = result + parseFloat(num);
+      }
 
-console.log($scope.$parent.$parent.$parent.table[i][key][attrs.calculateTable]);
+      if (TotalRow[key][attrs.calculateTable] == "-") {TotalRow[key][attrs.calculateTable] = 0;}
+      ResultRow[key][attrs.calculateTable] =  TotalRow[key][attrs.calculateTable] - result;
+    };
 
-//result = result + parseFloat($scope.$parent.$parent.$parent.table[i][key][attrs.calculateTable].replace('-', "0"));
-      console.log(result);
-         }
-
-    
-      };
-
-function checkRowCalculate (row, arr) {
-  for (var i = 0; i < arr.length; i++) {
-    if (row.name.indexOf(arr[i]) !== -1) {
-      return true;
-    } else {
-      continue;
+    function checkRowCalculate (row, arr) {
+      for (var i = 0; i < arr.length; i++) {
+        if (row.name.indexOf(arr[i]) !== -1) {
+          return true;
+        } else {
+          continue;
+        }
+      }
+      return false;
     }
+
+
+
   }
-  return false;
-}
-
-
-
-}
 };
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -329,6 +324,282 @@ function checkTimeBuilding() {
     }
   };
 }
+
+
+
+////////////////////////////////////////////////WORK TABLE//////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////WORK TABLE//////////////////////////////////////////
+
+angular.module('jobPos').directive('tableWork', tableWork);
+
+function tableWork() {
+  return {
+    restrict: 'E',
+    templateUrl: 'views/directiv/tableWork.html',
+    link: function($scope, elm, attrs, ctrl) {
+      $scope.ObjWorkTabl = new ObjWorkTabl();
+
+      function ObjWorkTabl() {
+        if (ObjWorkTabl.__instance) {
+          return ObjWorkTabl.__instance; 
+        } else if (this === window) {
+          return new ObjWorkTabl();
+        }
+        ObjWorkTabl.__instance = this;
+
+        this.workCapacity = 0;
+        this.sumWorking = function (argument) {
+          console.log('ObjWorkTabl');
+          return (this.workCapacity / $scope.timeBuilding / 8 / 22).toFixed(0); //8час: X мес:22дн
+        };
+        this.ITR = function (argument) {
+          return (this.sumWorking() * 0.155).toFixed(0); //15,5%
+        };
+        this.working = function (argument) {
+          return (this.sumWorking() - this.ITR()); //15,5% 
+        };
+        this.workingInTheShift = function (argument) {
+          return (this.working() * 0.7).toFixed(0);  // в т.ч. рабочих * 70 %
+        };
+        this.ITRInTheShift = function (argument) {
+          return (this.ITR() * 0.8).toFixed(0);   // ИТР * 80% 
+        };
+        this.sumInTheShift = function (argument) {
+          return Math.ceil(parseFloat(this.workingInTheShift()) + (this.ITRInTheShift() * 0.5));   // (34+7x0,5) = 38 чел 
+        };
+      }
+    }
+  };
+}
+
+////////////////////////////////////////////////tableHousehold TABLE//////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////tableHousehold TABLE//////////////////////////////////////////
+
+angular.module('jobPos').directive('tableHousehold', tableHousehold);
+function tableHousehold() {
+  return {
+    restrict: 'E',
+    templateUrl: 'views/directiv/tableHousehold.html',
+    link: function($scope, elm, attrs, ctrl) {
+    }
+  };
+}
+
+
+//////////////////////////////////////////////// Stockroom TABLE//////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////// Stockroom TABLE//////////////////////////////////////////
+
+// function watchCoefficient () {
+//   $scope.ResourcesTablar = [];
+//   for (var i = 0; i < ResourcesTablSumma().length; i++) {
+//     $scope.ResourcesTablar.push(new ResourcesOBJcreate( ResourcesTablSumma()[i]));
+//   }
+//   $scope.maxSummaYear = Math.max(...ResourcesTablSumma());
+// }
+
+angular.module('jobPos').directive('tableStockroom', tableStockroom);
+
+function tableStockroom() {
+  return {
+
+    restrict: 'E',
+    templateUrl: 'views/directiv/tableStockroom.html',
+    link: function($scope, elm, attrs, ctrl) {
+      $scope.objStockroom = new objStockroom();
+
+      function objStockroom() {
+        if (objStockroom.__instance) {
+          return objStockroom.__instance; 
+        } else if (this === window) {
+          return new objStockroom();
+        }
+        objStockroom.__instance = this;
+
+        this.coefficient = 0;
+        this.arrSummaYear = [];
+        this.setArrSummaYear = function () {
+          this.arrSummaYear = [];
+          console.log('this.arrSummaYear');
+          let count = 0;
+          let i = 0;
+          let row = $scope.table[$scope.table.length-1]; //if (($scope.table[i].name).indexOf('В С Е Г О:') !== -1) {
+            let summa = 0;
+            for (var key in row) {
+              if ($scope.valueCheck(row[key])) {
+                let month = $scope.arrayYearsColdspan[i].coldspan;
+                count ++;
+                let val = row[key].second;
+                if (val == "-") {val = "0";}
+                summa = summa + parseFloat(val);
+                if (count == month) {
+                  count = 0;
+                  i ++;
+                  this.arrSummaYear.push(summa);
+                  summa = 0;
+                }
+              }
+            }  
+          }();
+
+          this.maxSummaYear = function () {
+             console.log(this.arrSummaYear);
+            return Math.max(...this.arrSummaYear);   
+          };
+
+
+        }
+      }
+    };
+  }
+
+
+
+  angular.module('jobPos').directive('tableResources', tableResources);
+
+  function tableResources() {
+    return {
+      restrict: 'E',
+      templateUrl: 'views/directiv/tableResources.html',
+      link: function($scope, elm, attrs, ctrl) {
+
+
+        console.log($scope.objStockroom.arrSummaYear);
+
+        $scope.objResources = new objResources();
+
+        function objResources() {
+          if (objResources.__instance) {
+            return objResources.__instance; 
+          } else if (this === window) {
+            return new objResources();
+          }
+          objResources.__instance = this;
+
+          this.visible = function () {
+            if ($scope.objStockroom.arrSummaYear.length < 2) {return true;}
+          };
+
+          // this.table = _.memoize(function () {
+          //  let table = [];
+          //  for (var i = 0; i < $scope.objStockroom.arrSummaYear().length; i++) {
+          //    console.log($scope.objStockroom.arrSummaYear()[i]);
+          //    table.push(new ResourcesOBJcreate($scope.objStockroom.arrSummaYear()[i]));
+          //    return table;
+          //  });
+
+
+         //  this.table = (function() {
+         //    let table = [];
+         //    for (var i = 0; i < $scope.objStockroom.arrSummaYear().length; i++) {
+         //     console.log($scope.objStockroom.arrSummaYear()[i]);
+         //     table.push(new ResourcesOBJcreate($scope.objStockroom.arrSummaYear()[i]));
+         //   }
+         //   return table;
+         // });
+
+
+
+
+         // this.tableRes =[];
+         // this.table = function () {
+         //  this.tableRes =[];
+         //   for (var i = 0; i < $scope.objStockroom.arrSummaYear().length; i++) {
+         //     console.log($scope.objStockroom.arrSummaYear()[i]);
+         //   this.tableRes.push(new ResourcesOBJcreate($scope.objStockroom.arrSummaYear()[i]));
+         //   }
+
+       };
+
+
+// $scope.$watchGroup(['objStockroom.arrSummaYear()'], function(newValue, oldValue, scope) {
+//   console.log($scope.objStockroom.arrSummaYear());
+//   // $scope.objResources = new objResources();
+//  });
+
+
+
+
+
+
+
+
+
+      // }
+
+
+
+      function ResourcesOBJcreate (summa) {
+        let electric;
+        let oil;
+        let vapor;
+        let compresAir;
+        let waterHouse;
+        let oxyden;
+        let coef = function (argument) {
+          if ($scope.objStockroom.coefficient == 0) {return 1;}
+        };
+        let summaPlusCoef = summa / (2.7 * 1267 * coef());
+        if (summaPlusCoef < 0.750) {
+          electric = "205";
+          oil = "97";
+          vapor = "200";
+          compresAir = "3.9";
+          waterHouse = "0.3";
+          oxyden = "4400";
+        } else if (0.749 < summaPlusCoef && summaPlusCoef < 1.250) {
+          electric = "185";
+          oil = "69";
+          vapor = "185";
+          compresAir = "3.2";
+          waterHouse = "0.23";
+          oxyden = "4400";
+        } else if (1.249 < summaPlusCoef && summaPlusCoef < 1.750) {
+          electric = "140";
+          oil = "52";
+          vapor = "160";
+          compresAir = "3.2";
+          waterHouse = "0.2";
+          oxyden = "4400";
+        } else if (1.749 < summaPlusCoef && summaPlusCoef < 2.250) {
+          electric = "100";
+          oil = "44";
+          vapor = "140";
+          compresAir = "2.6";
+          waterHouse = "0.16";
+          oxyden = "4400";
+        } else if (2.249 < summaPlusCoef) {
+          electric = "70";
+          oil = "40";
+          vapor = "130";
+          compresAir = "2.6";
+          waterHouse = "0.16";
+          oxyden = "4400";
+        }
+        return{
+          summa : summa,
+          electric : electric,
+          oil : oil,
+          vapor : vapor,
+          compresAir : compresAir,
+          waterHouse : waterHouse,
+          oxyden : oxyden
+        }
+      }
+
+
+      
+
+
+
+    }
+  };
+}
+
+
+
 
 
 
@@ -393,57 +664,6 @@ function checkTimeBuilding() {
 
 
 
-// function watchTable(row, key) {
-//   if (key == "total" || key == "CMP") {
-//     refreshTable ();
-//   } else {
-//     refreshLastValueTable (row);
-//   }
-//   watchCoefficient (); //// для коэфициента 2,7*1267*....
-// }
-
-
-
-
-
-
-
-// $scope.rowCalculatePercent = ["В С Е Г О:", "квартирный жилой", "Прочие работы"];
-
-
-
-// //ВЫЧИСЛЕНИЕ!!!!!!!!!!!!!
-// function refreshTable () {
-
-//   //каждой строки в табице кроме прочие
-//   for (var i = 0; i < $scope.table.length; i++){
-//     if (($scope.table[i].name).indexOf('Прочие работы') !== -1 ) {
-//       continue;
-//     }
-//     // проценты расчет
-//     if ($scope.table[i].total !== "0" && checkRowCalculate($scope.table[i], $scope.rowCalculatePercent)) {
-//       calculatePercentRow($scope.table[i]);
-//       continue;
-//     }
-//     // расчет последний месяц
-//     if ($scope.table[i].total !== "0" && checkRowCalculate($scope.table[i], $scope.rowCalculateLastMonth)) {
-//       calculateLastMonth($scope.table[i]);
-//       continue;
-//     }
-//    // расчет первый месяц
-//    if ($scope.table[i].total !== "0" && checkRowCalculate($scope.table[i], $scope.rowCalculateFirstMonth)) {
-//     calculateFirstMonth($scope.table[i]);
-//     continue;
-//   }
-//     // расчет первый и последний месяц
-//     if ($scope.table[i].total !== "0" && checkRowCalculate($scope.table[i], $scope.rowCalculateFirstAndLastMonth)) {
-//       calculateFirstAndLastMonth($scope.table[i]);
-//       continue;
-//     }
-//   }
-//   calculateOther();
-// }
-
 //  // проценты расчет
 //  function calculatePercentRow (row) {
 //   let count = 0;
@@ -466,51 +686,7 @@ function checkTimeBuilding() {
 
 
 
-// ////////////////////////////////////////////////WORK TABLE//////////////////////////////////////////
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// ////////////////////////////////////////////////WORK TABLE//////////////////////////////////////////
 
-
-// function WorkTabl (workCapacity) {
-//   return{
-//     workCapacity : workCapacity,
-//     sumWorking : function () {
-//       if (workCapacity == "" || $scope.timeBuilding == "") {return "";}
-//       return Math.ceil(this.workCapacity / 8 / 22 / $scope.timeBuilding); //8час: X мес:22дн
-//     },
-//     ITR : function () {
-//       if (workCapacity == "" || $scope.timeBuilding == "") {return "";}
-//       return Math.ceil(this.sumWorking() * 0.155); //15,5% 
-//     },
-//     working : function () {
-//       if (workCapacity == "" || $scope.timeBuilding == "") {return "";}
-//       return this.sumWorking() - this.ITR(); //8час: X мес:22дн
-//     },
-//     workingInTheShift : function () {
-//       return Math.ceil(this.working() * 0.7); // в т.ч. рабочих * 70 %
-//     },
-//     ITRInTheShift : function () {
-//       return  Math.ceil(this.ITR() * 0.8); // ИТР * 80% 
-//     },
-//     sumInTheShift : function () {
-//       return  Math.ceil(this.workingInTheShift() + this.ITRInTheShift() * 0.5); // (34+7x0,5) = 38 чел 
-//     }
-//   }
-// }
-
-// $scope.ObjWorkTabl = WorkTabl("");
-
-// $scope.clickWorkTabl = function (event){
-//   setTimeout(function () {
-//     var elem = document.getElementById("edit2");
-//     elem.focus();
-//     elem.value = $scope.ObjWorkTabl.workCapacity;
-//   },100);
-// };
-
-// $scope.inputWorkTabl = function (value){
-//  $scope.ObjWorkTabl =  WorkTabl(value);
-// };
 
 
 
@@ -518,51 +694,8 @@ function checkTimeBuilding() {
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ////////////////////////////////////////////////Resources TABLE//////////////////////////////////////////
 
-// $scope.coefficient = new Number(); // 2,7 (84год) х 1267(91год) х0,70842 (текущий)
-// $scope.ResourcesTablar = [];
-// $scope.ResourcesVisible = true;
-// $scope.maxSummaYear = new Number(); 
 
-// $scope.$watchGroup(['timeBuilding', 'dateBeginBuilding', 'coefficient'], function(newValue, oldValue, scope) {
-//   if ($scope.timeBuilding == 0 || $scope.coefficient == 0) {return;}
-//   watchCoefficient();
-//   if (1 < ResourcesTablSumma().length ) {
-//     $scope.ResourcesVisible = false;
-//   } else {
-//     $scope.ResourcesVisible = true;
-//   }
-// });
 
-// function watchCoefficient () {
-//   $scope.ResourcesTablar = [];
-//   for (var i = 0; i < ResourcesTablSumma().length; i++) {
-//     $scope.ResourcesTablar.push(new ResourcesOBJcreate( ResourcesTablSumma()[i]));
-//   }
-//   $scope.maxSummaYear = Math.max(...ResourcesTablSumma());
-// }
-
-// function ResourcesTablSumma() {
-//   let rezult = [];
-//   let count = 0;
-//   let i = 0;
-//     let row = $scope.table[$scope.table.length-1]; //if (($scope.table[i].name).indexOf('В С Е Г О:') !== -1) {
-//       let summa = 0;
-//       for (var key in row) {
-//         if ($scope.valueCheck(row[key])) {
-//           let month = $scope.arrayYearsColdspan[i].coldspan;
-//           count ++;
-//           summa = summa + row[key].second;
-//           if (count == month) {
-//             count = 0;
-//             i ++;
-//             rezult.push(summa);
-//             summa = 0;
-//           }
-
-//         }
-//       }
-//   return rezult;
-// }
 
 
 
