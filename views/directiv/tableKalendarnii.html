@@ -1,3 +1,14 @@
+
+<div class="row">
+	<div class="btn-group col-sm-offset-1">
+	<button class="btn btn-default btn-xs" >Добавить строку</button>
+		<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-up"></span></button>
+		<button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-down"></span>  </button>
+		<button class="btn btn-default btn-xs">Удалить строку</button>
+	</div>
+</div>
+
+
 <div class="row">
 	<div class="col-sm-10 ">
 		<table class="table table-bordered table-hover table-condensed">
@@ -24,41 +35,37 @@
 				<td >{{$index+1}}</td>
 				<td ng-repeat="(key, value) in Row track by $index">
 
-<text-tabl ng-if="!valueCheck(value)" calculate-table text="Row[key]" key="{{key}}"></text-tabl>
+					<text-tabl ng-if="!valueCheck(value)" calculate-table text="Row[key]" key="{{key}}"></text-tabl>
 
-<text-tabl ng-if="valueCheck(value)" calculate-table text="Row[key].first"></text-tabl>
+					<text-tabl ng-if="valueCheck(value)" calculate-table="first" text="Row[key].first" key="{{key}}"></text-tabl>
 
-<text-tabl text="Row[key].second" key="{{key}}" calculate-table></text-tabl>
+					<text-tabl ng-if="valueCheck(value)" calculate-table="second" text="Row[key].second" key="{{key}}"></text-tabl>
 
 				</td>
 
 <!--
 
-
-
 <td ng-repeat="(key, value) in row"><text-tabl text="row[key]"></text-tabl><text-tabl text="2"></text-tabl></td>
-
-
 	<td ng-repeat="Month in arrayMonth track by $index" ng-click="clickPercent($event, Month)" data-change="false" >{{Month.value}}
 	<input type="text" class="form-control input-sm" id="edit" ng-if="showInput" ng-blur="inputPercentBlur()" >
 	</td>
 
 -->
 
-			</tr>
+</tr>
 
-			<tr >
-				<td > </td>
-				<td >Распределение капвложений по месяцам </td>
-				<td >100%</td>
-				<td >100%</td>
-				<td ng-repeat="Month in arrayMonth track by $index" ng-click="clickPercent($event, Month)" data-change="false" >{{Month.value}}
-				</td>
+<tr >
+	<td > </td>
+	<td >Распределение капвложений по месяцам </td>
+	<td >100%</td>
+	<td >100%</td>
+	<td ng-repeat="Month in arrayMonth track by $index" ng-click="clickPercent($event, Month)" data-change="false" >{{Month.value}}
+	</td>
 
-			</tr>
+</tr>
 
-		</table>
+</table>
 
 <button type="submit" ng-click="save()">Show</button>
-	</div>
+</div>
 </div>

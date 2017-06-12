@@ -10,7 +10,7 @@ jobPos.controller('PosCtrl', ['$scope', function($scope){
     ,"Наружные сети(подключение)"
     ,"Временные здания и сооружения"
     , "Прочие работы и лимитированные затраты", "В С Е Г О:" ); 
-
+  $scope.rowCalculatePercent = ["В С Е Г О:", "квартирный жилой", "Прочие работы"];
 
 
 $scope.dateBeginBuilding = new Date(); //дата начала строительства
@@ -19,6 +19,10 @@ $scope.timeBuildingCeil = 0;
 $scope.table = new Array();          
 $scope.arrayMonth = new Array();      
 $scope.arrayYearsColdspan = new Array();
+
+
+
+$scope.timeBuilding = 3;
 
 
 function tableRow (arr, name="", total="0", CMP="0") {
@@ -177,7 +181,6 @@ angular.module('jobPos').directive('myInput', function($compile){
       if (e.charCode == 13) {
         $scope.inputBlur($element[0].value);
       }
-
     };
   },
 };
@@ -191,52 +194,95 @@ function calculateTable() {
     link: function($scope, elm, attrs, ctrl) {
      $scope.$watch(attrs.text, function(newValue, oldValue, scope){
       if (newValue == oldValue) {return;}
-      $scope.calculate();
+      $scope.calculate(attrs.key);
     });
+
 
      $scope.calculate = function (val) {
        if (attrs.key == "total" || attrs.key == "CMP") {
-        $scope.calculateOther($scope.mykey);
+        $scope.calculateOther(attrs.key);
+      } else if (attrs.key == "name") {
+        return;
+      } else {
+          $scope.calculateRow($scope.$parent.$parent.Row, attrs);
+          $scope.calculateColumn($scope.$parent.$parent.Row, attrs, val);
+        } 
+      };
+
+      $scope.calculateOther = function (key) {
+        let other;
+        let totalRow;
+        let result = 0;
+        for (var i = 0; i < $scope.$parent.$parent.table.length; i++){
+          if (($scope.$parent.$parent.table[i].name).indexOf('Прочие работы') !== -1 ) {
+            other = $scope.$parent.$parent.table[i];
+            continue;
+          }
+          if (($scope.$parent.$parent.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
+            totalRow = $scope.$parent.$parent.table[i];
+            continue;
+          }
+          let sum = $scope.$parent.$parent.table[i][key].replace('-', "0");
+          result = result + parseFloat(sum);
+        }
+        other[key] = totalRow[key] - result;
+      };
+
+
+      $scope.calculateRow = function (row,attrs) {
+       if (!checkRowCalculate(row,$scope.rowCalculatePercent) || this.$parent.$last == true) {return;}
+       let lastKey = Object.keys(row)[Object.keys(row).length - 1];
+       let result = 0;
+      for (var key in row){
+          if (key == "name" || key == "total" || key == "CMP" || key == lastKey) {continue;}
+          result = result + parseFloat(row[key][attrs.calculateTable].replace('-', "0"));
       }
-    };
-    $scope.calculate = function (val) {
-     if (attrs.key == "total" || attrs.key == "CMP") {
-      $scope.calculateOther(attrs.key);
+      if (attrs.calculateTable == "first") {
+        row[lastKey][attrs.calculateTable] = row.total - result;
+      } else {
+        row[lastKey][attrs.calculateTable] = row.CMP - result;
+      }
+      };
+
+      $scope.calculateColumn = function (row,attrs,key) {
+      //console.log($scope.$parent.$parent.$parent.table);
+      let result = 0;
+         for (var i = 0; i < $scope.$parent.$parent.$parent.table.length; i++) {
+
+          if (checkRowCalculate(row,["квартирный жилой"])) {
+            console.log('квартирный жилой');
+            continue;
+          }
+          if (checkRowCalculate(row,["В С Е Г О:"])) {
+            console.log('В С Е Г О:');
+            continue;
+          }
+
+console.log($scope.$parent.$parent.$parent.table[i][key][attrs.calculateTable]);
+
+//result = result + parseFloat($scope.$parent.$parent.$parent.table[i][key][attrs.calculateTable].replace('-', "0"));
+      console.log(result);
+         }
+
+    
+      };
+
+function checkRowCalculate (row, arr) {
+  for (var i = 0; i < arr.length; i++) {
+    if (row.name.indexOf(arr[i]) !== -1) {
+      return true;
+    } else {
+      continue;
     }
-  };
+  }
+  return false;
+}
 
-  $scope.calculateOther = function (key) {
-    let other;
-    let totalRow;
-    let rezult = 0;
-
-    for (var i = 0; i < $scope.$parent.$parent.table.length; i++){
-      if (($scope.$parent.$parent.table[i].name).indexOf('Прочие работы') !== -1 ) {
-        other = $scope.$parent.$parent.table[i];
-        continue;
-      }
-      if (($scope.$parent.$parent.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
-        totalRow = $scope.$parent.$parent.table[i];
-        continue;
-      }
-      let sum = $scope.$parent.$parent.table[i][key].replace('-', "0");
-      rezult = rezult + parseFloat(sum);
-    }
-    other[key] = totalRow[key] - rezult;
-
-  };
 
 
 }
 };
 }
-
-
-
-
-
-
-
 
 
 
@@ -356,102 +402,14 @@ function checkTimeBuilding() {
 //   watchCoefficient (); //// для коэфициента 2,7*1267*....
 // }
 
-// //расчет последнего месяца
-// function refreshLastValueTable (row) {
-//   let arr = [];
-//   arr = arr.concat($scope.rowCalculatePercent, $scope.rowCalculateLastMonth, $scope.rowCalculateFirstAndLastMonth);
-
-//   if (checkRowCalculate(row, arr)) {
-//    calculateLastMonthTable(row);
-//    calculateOther ();
-//  }
-// }
-
-// //расчет последнего месяца продолжение
-// function calculateLastMonthTable (row) {
-//  let result = []; 
-//  let val = lastANDfirstKey(row)[1];
-//  result[0] = row.total;
-//  result[1] = row.CMP;
-
-//  for (var key in row){
-//   if (key == "name" || key == "total" || key == "CMP"  || key == val) {
-//     continue; 
-//   }
-//   result[0] = result[0] - row[key].first;
-//   result[1] = result[1] - row[key].second;
-// }
-
-// row[val].first = result[0];
-// row[val].second = result[1];
-// }
-
-// function calculateOther () {
-//   let other;
-//   let totalRow;
-
-//   for (var i = 0; i < $scope.table.length; i++){
-//     if (($scope.table[i].name).indexOf('Прочие работы') !== -1 ) {
-//       other = $scope.table[i];
-//     }
-//     if (($scope.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
-//       totalRow = $scope.table[i];
-//     }
-//   }
-
-//   for (var key in other) {
-//     let result = [];
-
-//     if (key == "name") {
-//       continue; 
-//     }
-//     if (key == "total" || key == "CMP") {
-//       result[0] = totalRow[key];
-//     } else {
-//       result[0] = totalRow[key].first;
-//       result[1] = totalRow[key].second;
-//     }
-
-//     for (var i = 0; i < $scope.table.length; i++){
-
-//       if (($scope.table[i].name).indexOf('В С Е Г О:') !== -1 || ($scope.table[i].name).indexOf('Прочие работы') !== -1) {
-//         continue; 
-//       }
-//       if (key == "total" || key == "CMP") {
-//         result[0] = result[0] - $scope.table[i][key];
-//       } else {
-//         result[0] = result[0] - $scope.table[i][key].first;
-//         result[1] = result[1] - $scope.table[i][key].second;
-//       }
-//     }
-
-//     if (key == "total" || key == "CMP") {
-//       other[key] =  result[0];
-//     } else {
-//       other[key].first = result[0];
-//       other[key].second = result[1];
-//     }
-//   }
-//   calculateLastMonthTable (other);
-// }
 
 
 
-// $scope.rowCalculatePercent = ["В С Е Г О:", "квартирный жилой"];
-// $scope.rowCalculateLastMonth = ["сети"];
-// $scope.rowCalculateFirstMonth = ["Подготовка"];
-// $scope.rowCalculateFirstAndLastMonth = ["Временные здания"];
-// //как считать строки
-// function checkRowCalculate (row, arr) {
-//   for (var i = 0; i < arr.length; i++) {
-//     if (row.name.indexOf(arr[i]) !== -1) {
-//       return true;
-//     } else {
-//       continue;
-//     }
-//   }
-//   return false;
-// }
+
+
+
+// $scope.rowCalculatePercent = ["В С Е Г О:", "квартирный жилой", "Прочие работы"];
+
 
 
 // //ВЫЧИСЛЕНИЕ!!!!!!!!!!!!!
@@ -502,67 +460,10 @@ function checkTimeBuilding() {
 //  } 
 // }
 
-// // расчет последний месяц
-// function calculateLastMonth (row) {
-//   let val = lastANDfirstKey(row)[1];
-//   row[val].first = row.total;
-//   row[val].second = row.CMP;
-// }
-
-// // расчет первый месяц
-// function calculateFirstMonth (row) {
-//   let val = lastANDfirstKey(row)[0];
-//   row[val].first = row.total;
-//   row[val].second = row.CMP;
-// }
-
-// // расчет первый и последний месяц
-// function calculateFirstAndLastMonth (row) {
-//   let val = lastANDfirstKey(row);
-//   row[val[0]].first = row.total * 0.8;
-//   row[val[0]].second = row.CMP * 0.8;
-//   row[val[1]].first = row.total * 0.2;
-//   row[val[1]].second = row.CMP * 0.2;
-// }
-
-
-// function lastANDfirstKey(row){
-//   let keys = new Array(2)
-//   let valFirst = "";
-//   let valLast = "";
-//   for (var key in row) {
-//     if ($scope.valueCheck(row[key]) && valFirst == "") {
-//       valFirst = key;
-//     } 
-//     valLast = key;
-//   } 
-//   keys[0] = valFirst;
-//   keys[1] = valLast;
-//   return keys;
-// }
 
 
 
 
-// // function replaceOnNumber () {
-// //   for (var i = 0; i < $scope.table.length; i++){
-// //     for (var key in $scope.table) {
-// //       if ($scope.table[key] == "-") {
-// //         $scope.table[key] = "0";
-// //       }
-// //     }
-// //   }
-// // }
-
-// // function replaceOnMinus () {
-// //   for (var i = 0; i < $scope.table.length; i++){
-// //     for (var key in $scope.table) {
-// //       if ($scope.table[key] == "0") {
-// //         $scope.table[key] = "-";
-// //       }
-// //     }
-// //   }
-// // }
 
 
 // ////////////////////////////////////////////////WORK TABLE//////////////////////////////////////////
