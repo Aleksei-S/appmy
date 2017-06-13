@@ -4,7 +4,7 @@
 			<td rowspan="2">Наименование ресурсов</td>
 			<td rowspan="2">Един. изм.</td>
 			<td rowspan="2">Коэфф.</td>
-			<td rowspan="2" ng-show="objResources.Visible">Норма на 1 млн руб. СМР </td>
+			<td rowspan="2" ng-show="objResources.visible">Норма на 1 млн руб. СМР </td>
 			<td colspan="{{objResources.table().length}}">Потребность на  период строительства</td>
 		</tr>
 		<tr>
@@ -13,12 +13,12 @@
 		<tr>
 			<td class="tdLeft">Объем СМР</td>
 			<td >тыс.руб. (BRN)</td>
-			<td >2,7х1267х{{objStockroom.coefficient}}</td>
+			<td >2,7х1267х{{coefficient}}</td>
 			<td >-</td>
 			<td ng-repeat="td in objResources.table() track by $index">{{td}}</td>
 
 		</tr>
-			<!--
+		
 		<tr>
 			<td class="tdLeft">Электроэнергия</td>
 			<td >ква</td>
@@ -27,6 +27,7 @@
 			<td ng-repeat="td in objResources.tableRes track by $index">{{(td.summa/(2.7*1267*objStockroom.coefficient)*td.electric*1.02).toFixed(2)}}
 				<span ng-show="ResourcesVisible ? false : true"><br>{{td.electric}}</span></td>
 			</tr>
+		<!--	
 			<tr>
 				<td class="tdLeft"> Топливо</td>
 				<td >тн</td>
