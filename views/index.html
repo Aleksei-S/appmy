@@ -35,7 +35,7 @@
 							<h5 class="text-nowrap">Начало строительства:</h5>
 						</div> 
 						<div class="col-md-8 col-sm-12">
-							<div class="col-xs-6 nopadding">
+							<div class="col-xs-12 col-md-6 col-sm-6 nopadding" >
 								<input type="month" ng-model="dateBeginBuilding" class="form-control input-sm">
 							</div>
 						</div>
@@ -59,8 +59,11 @@
 							<h5 class="text-nowrap">Распределение процентов:</h5>
 						</div> 
 						<div class="col-md-8 col-sm-12">
-							<div class="col-xs-8 nopadding">
-								<input type="text" class="form-control input-sm ">
+							<div class="col-xs-12 col-md-6 col-sm-6 nopadding">
+								<input type="text" class="form-control input-sm" ng-keypress="pressKey($event,'butCalculate')" check-percent  ng-blur="inputBlurPercent($event)">
+							</div>
+							<div class="col-xs-12 col-md-6 col-sm-6 nopadding">
+								<h6 class="text-nowrap">{{Percent.join('-') +"%"}}</h6>
 							</div>
 
 						</div>

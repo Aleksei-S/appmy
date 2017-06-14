@@ -26,6 +26,8 @@ $scope.timeBuildingCeil = 0;
 $scope.table = new Array();          
 $scope.arrayMonth = new Array();      
 $scope.arrayYearsColdspan = new Array();
+$scope.Percent =  [];
+
 
 
 $scope.timeBuilding = 6;
@@ -64,24 +66,89 @@ $scope.valueCheck = function (val) {
   return false;
 }
 
+
+$scope.pressKey = function (e, nextId) {
+ if (e.charCode == 13) {
+  var elem = document.getElementById(nextId);
+  elem.focus();
+}
+}
+
+
+
+$scope.calcPercentTable = function () {
+  if ($scope.timeBuildingCeil == 0 || $scope.timeBuildingCeil !== $scope.Percent.length) {return;}
+
+
+
+
+for (var i = 0; i < $scope.table.length; i++) {
+
+
+  for (var n = $scope.rowCalculatePercent.length - 1; n >= 0; n--) {
+      if ($scope.table[i].name.indexOf($scope.rowCalculatePercent[n]) !== -1) {
+         for (key in $scope.table[i]) {
+          let m = 0;
+              if (key == "name" || key == "total" || key == "CMP") {continue;}
+              $scope.table[i][key].first = $scope.table[i].total * $scope.Percent[m];
+              $scope.table[i][key].second = 
+         }
+      }
+  }
+
+}
+
+   
+
+  
+}
+
+
+
+$scope.Percent.
+
+
+    // function checkRowCalculate (row, arr) {
+    //   for (var i = 0; i < arr.length; i++) {
+    //     if (row.name.indexOf(arr[i]) !== -1) {
+    //       return true;
+    //     } else {
+    //       continue;
+    //     }
+    //   }
+    //   return false;
+    // }
+
+
+      //  if (!checkRowCalculate(row,$scope.rowCalculatePercent) || this.$parent.$last == true) {return;}
+      //  let lastKey = Object.keys(row)[Object.keys(row).length - 1];
+      //  let result = 0;
+      //  for (var key in row){
+      //   if (key == "name" || key == "total" || key == "CMP" || key == lastKey) {continue;}
+      //   if (row[key][attrs.calculateTable] == "-") {row[key][attrs.calculateTable] = "0";}
+      //   result = result + parseFloat(row[key][attrs.calculateTable]);
+      // }
+      // if (attrs.calculateTable == "first") {
+      //   row[lastKey][attrs.calculateTable] = row.total - result;
+      // } else {
+      //   row[lastKey][attrs.calculateTable] = row.CMP - result;
+      // }
+
+
+
+
+
 $scope.savePos = function (val) {
 
 
-  console.log($scope.objStockroom.tab());
+  console.log($scope.objStockroom.table());
 
   // console.log($scope.objStockroom.maxSummaYear());
 }
 
 
 
-
-
-
-
-
 }]);
-
-
 
 
 jobPos.directive('tableKalendarnii',  ['$compile', function($compile){
@@ -292,8 +359,6 @@ function calculateTable() {
 }
 
 
-
-
 angular.module('jobPos').directive('checkNum', checkNum);
 function checkNum() {
   return {
@@ -329,14 +394,9 @@ function checkTimeBuilding() {
   };
 }
 
-
-
 // ////////////////////////////////////////////////WORK TABLE//////////////////////////////////////////
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ////////////////////////////////////////////////WORK TABLE//////////////////////////////////////////
-
-
-
 
 angular.module('jobPos').directive('tableWork', tableWork);
 function tableWork() {
@@ -381,7 +441,6 @@ function tableWork() {
   };
 }
 
-
 //////////////////////////////////////////////tableHousehold TABLE//////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////tableHousehold TABLE//////////////////////////////////////////
@@ -396,17 +455,13 @@ function tableHousehold() {
   };
 }
 
-
 /////////////////////////////////////////////Stockroom TABLE//////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////// Stockroom TABLE//////////////////////////////////////////
 
+angular.module('jobPos').directive('tableStockroom', tableStockroom);
 
-
-
- angular.module('jobPos').directive('tableStockroom', tableStockroom);
-
- function tableStockroom() {
+function tableStockroom() {
   return {
    restrict: 'E',
    templateUrl: 'views/directiv/tableStockroom.html',
@@ -415,7 +470,7 @@ function tableHousehold() {
 
     $scope.coefficient=0;
 
-  
+
     function objStockroom () {
      this.arrSummaYear = function () {
 
@@ -440,105 +495,15 @@ function tableHousehold() {
     return Math.max(...this.arrSummaYear());   
   };     
 
-   this.tab = function () { 
-    let table=[];
-    for (var i = 0; i < this.arrSummaYear().length; i++) {
-     table.push(new ResourcesOBJcreate(this.arrSummaYear()[i]));
-    };   
-    return table;
-  };     
 
 
 };
-
 $scope.objStockroom = new objStockroom();
 
 
-
-
-
-
-      function ResourcesOBJcreate (summa) {
-        let electric;
-        let oil;
-        let vapor;
-        let compresAir;
-        let waterHouse;
-        let oxyden;
-        let coef = function (argument) {
-          console.log("2.7 * 1267 * coef()");
-          if ($scope.coefficient == 0) {return 1;}
-        };
-        let summaPlusCoef = summa / (2.7 * 1267 * coef());
-        if (summaPlusCoef < 0.750) {
-          electric = "205";
-          oil = "97";
-          vapor = "200";
-          compresAir = "3.9";
-          waterHouse = "0.3";
-          oxyden = "4400";
-        } else if (0.749 < summaPlusCoef && summaPlusCoef < 1.250) {
-          electric = "185";
-          oil = "69";
-          vapor = "185";
-          compresAir = "3.2";
-          waterHouse = "0.23";
-          oxyden = "4400";
-        } else if (1.249 < summaPlusCoef && summaPlusCoef < 1.750) {
-          electric = "140";
-          oil = "52";
-          vapor = "160";
-          compresAir = "3.2";
-          waterHouse = "0.2";
-          oxyden = "4400";
-        } else if (1.749 < summaPlusCoef && summaPlusCoef < 2.250) {
-          electric = "100";
-          oil = "44";
-          vapor = "140";
-          compresAir = "2.6";
-          waterHouse = "0.16";
-          oxyden = "4400";
-        } else if (2.249 < summaPlusCoef) {
-          electric = "70";
-          oil = "40";
-          vapor = "130";
-          compresAir = "2.6";
-          waterHouse = "0.16";
-          oxyden = "4400";
-        }
-        return{
-          summa : summa,
-          electric : electric,
-          oil : oil,
-          vapor : vapor,
-          compresAir : compresAir,
-          waterHouse : waterHouse,
-          oxyden : oxyden
-        }
-      };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 };
 }
-
-
-
 
 
 
@@ -550,67 +515,102 @@ function tableResources() {
     templateUrl: 'views/directiv/tableResources.html',
     link: function($scope, elm, attrs, ctrl) {
 
-        $scope.objResources = new objResources();
+     $scope.$watch('objStockroom.arrSummaYear()', function(newValue, oldValue, scope) {
 
-        function objResources() {
+      let coefficient = $scope.coefficient;
+      let arrSummaYear = $scope.objStockroom.arrSummaYear();
 
-          this.visible = function () {
-            if ($scope.objStockroom.arrSummaYear().length < 2) {return true;}
-          };
+      let table = function () { 
+        let table=[];
+        for (var i = 0; i < arrSummaYear.length; i++) {
+         table.push(new ResourcesOBJcreate(arrSummaYear[i]));
+       };   
+       return table;
+     };     
 
-          // this.table = function () {
-          //  let table = [];
-          //  for (var i = 0; i < $scope.objStockroom.arrSummaYear().length; i++) {
-          //    console.log($scope.objStockroom.arrSummaYear()[i]);
-          //    table.push(new ResourcesOBJcreate($scope.objStockroom.arrSummaYear()[i]));
-          //    return table;
-          //  };
+     $scope.tableResources = {
+      coefficient : coefficient,
+      arrSummaYear : arrSummaYear,
+      table : table(),
+      visi : function () {
+        if ( this.arrSummaYear.length < 2) {
+          return true;
+        } else { return false;}
+      },
+    };
 
-
-         //  this.table = (function() {
-         //    let table = [];
-         //    for (var i = 0; i < $scope.objStockroom.arrSummaYear().length; i++) {
-         //     console.log($scope.objStockroom.arrSummaYear()[i]);
-         //     table.push(new ResourcesOBJcreate($scope.objStockroom.arrSummaYear()[i]));
-         //   }
-         //   return table;
-         // });
-
-
-
-
-         // this.tableRes =[];
-         // this.table = function () {
-         //  this.tableRes =[];
-         //   for (var i = 0; i < $scope.objStockroom.arrSummaYear().length; i++) {
-         //     console.log($scope.objStockroom.arrSummaYear()[i]);
-         //   this.tableRes.push(new ResourcesOBJcreate($scope.objStockroom.arrSummaYear()[i]));
-         //   }
-
-         };
-
-
-
+    $scope.CalculateResources = function (valSumma,valRes, coeff) {
+      if (valSumma == "0" || coeff == "0") { return "-";}
+      return (valSumma/(2.7*1267*$scope.coefficient)*valRes*coeff).toFixed(2);
     }
-  };
+
+  },true);
+
+     function ResourcesOBJcreate (summa) {
+      let electric;
+      let oil;
+      let vapor;
+      let compresAir;
+      let waterHouse;
+      let oxyden;
+      let coef = function (argument) {
+        console.log("2.7 * 1267 * coef()");
+        if ($scope.coefficient == 0) {return 1;}
+      };
+      let summaPlusCoef = summa / (2.7 * 1267 * coef());
+      if (summaPlusCoef < 0.750) {
+        electric = "205";
+        oil = "97";
+        vapor = "200";
+        compresAir = "3.9";
+        waterHouse = "0.3";
+        oxyden = "4400";
+      } else if (0.749 < summaPlusCoef && summaPlusCoef < 1.250) {
+        electric = "185";
+        oil = "69";
+        vapor = "185";
+        compresAir = "3.2";
+        waterHouse = "0.23";
+        oxyden = "4400";
+      } else if (1.249 < summaPlusCoef && summaPlusCoef < 1.750) {
+        electric = "140";
+        oil = "52";
+        vapor = "160";
+        compresAir = "3.2";
+        waterHouse = "0.2";
+        oxyden = "4400";
+      } else if (1.749 < summaPlusCoef && summaPlusCoef < 2.250) {
+        electric = "100";
+        oil = "44";
+        vapor = "140";
+        compresAir = "2.6";
+        waterHouse = "0.16";
+        oxyden = "4400";
+      } else if (2.249 < summaPlusCoef) {
+        electric = "70";
+        oil = "40";
+        vapor = "130";
+        compresAir = "2.6";
+        waterHouse = "0.16";
+        oxyden = "4400";
+      }
+      return{
+        summa : summa,
+        electric : electric,
+        oil : oil,
+        vapor : vapor,
+        compresAir : compresAir,
+        waterHouse : waterHouse,
+        oxyden : oxyden
+      }
+    };
+
+  }
+};
 }
 
 
 
-//         // console.log($scope.objStockroom.arrSummaYear);
-
-
-
-
-// // $scope.$watchGroup(['objStockroom.arrSummaYear()'], function(newValue, oldValue, scope) {
-// //   console.log($scope.objStockroom.arrSummaYear());
-// //   // $scope.objResources = new objResources();
-// //  });
-
-
-
-
-  
 
 
 
@@ -618,12 +618,38 @@ function tableResources() {
 
 
 
+angular.module('jobPos').directive('checkPercent', checkPercent);
+function checkPercent() {
+  return {
+    restrict: '',
+    link: function($scope, elm, attrs, ctrl) {
+      // ctrl.$formatters.unshift(function (fromValue) {
+      //   if (fromValue == "") { fromValue = 0;}
+      //   for (var i = 0; i < fromValue.length; i++) {
+      //     fromValue=fromValue[i] + "-";
+      //   }
+      //   return fromValue;
+      // });
+  //     ctrl.$parsers.push(function(inValue) {
+  //       inValue = inValue.replace(' ', "-");
+  //       if (inValue == 0 || inValue == "") {return inValue = "-";}
+  //       return inValue;
+  //     });
+  //     // $scope.pressKey = function (e, nextId) {
+  //     //  if (e.charCode == 13) {
+  //     //   var elem = document.getElementById(nextId);
+  //     //   elem.focus();
+  //     // }
+  //   // };
+  $scope.inputBlurPercent = function (e) {
+    $scope.Percent = e.target.value.split('-');
+  };
+   }
+};
+}
 
 
 
-//     }
-//   };
-// }
 
 
 
@@ -706,86 +732,6 @@ function tableResources() {
 // //    count++;
 // //  } 
 // // }
-
-
-
-
-
-
-
-
-
-
-
-// // ////////////////////////////////////////////////Resources TABLE//////////////////////////////////////////
-// // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// // ////////////////////////////////////////////////Resources TABLE//////////////////////////////////////////
-
-
-
-
-
-
-// // function ResourcesOBJcreate (summa ) {
-// //   let electric;
-// //   let oil;
-// //   let vapor;
-// //   let compresAir;
-// //   let waterHouse;
-// //   let oxyden;
-// //   let summaPlusCoef = summa / (2.7 * 1267 * $scope.coefficient);
-// //   if (summaPlusCoef < 0.750) {
-// //     electric = "205";
-// //     oil = "97";
-// //     vapor = "200";
-// //     compresAir = "3.9";
-// //     waterHouse = "0.3";
-// //     oxyden = "4400";
-// //   } else if (0.749 < summaPlusCoef && summaPlusCoef < 1.250) {
-// //     electric = "185";
-// //     oil = "69";
-// //     vapor = "185";
-// //     compresAir = "3.2";
-// //     waterHouse = "0.23";
-// //     oxyden = "4400";
-// //   } else if (1.249 < summaPlusCoef && summaPlusCoef < 1.750) {
-// //     electric = "140";
-// //     oil = "52";
-// //     vapor = "160";
-// //     compresAir = "3.2";
-// //     waterHouse = "0.2";
-// //     oxyden = "4400";
-// //   } else if (1.749 < summaPlusCoef && summaPlusCoef < 2.250) {
-// //     electric = "100";
-// //     oil = "44";
-// //     vapor = "140";
-// //     compresAir = "2.6";
-// //     waterHouse = "0.16";
-// //     oxyden = "4400";
-// //   } else if (2.249 < summaPlusCoef) {
-// //     electric = "70";
-// //     oil = "40";
-// //     vapor = "130";
-// //     compresAir = "2.6";
-// //     waterHouse = "0.16";
-// //     oxyden = "4400";
-// //   }
-
-// //   return{
-// //     summa : summa,
-// //     electric : electric,
-// //     oil : oil,
-// //     vapor : vapor,
-// //     compresAir : compresAir,
-// //     waterHouse : waterHouse,
-// //     oxyden : oxyden
-// //   }
-// // }
-
-
-
-
-
 
 
 
