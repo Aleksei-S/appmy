@@ -15,7 +15,7 @@
 			<td >4</td>
 			<td >{{ObjWorkTabl.ITRInTheShift()}}</td>
 			<td >-</td>
-			<td >{{(ObjWorkTabl.ITRInTheShift()*4).toFixed(1)}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.ITRInTheShift(),4)}}</td>
 		</tr>
 		<tr>
 			<td class="tdLeft">Диспетчерская</td>
@@ -32,49 +32,49 @@
 			<td >0,6</td>
 			<td >-</td>
 			<td >{{ObjWorkTabl.working()}}</td>
-			<td >{{(ObjWorkTabl.working()*0.6).toFixed(1);}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.working(),0.6)}}</td>
 		</tr>
 		<tr>
 			<td class="tdLeft">Душевая (1 сетка на 15 чел.)</td>
 			<td >0,287</td>
 			<td >-</td>
 			<td >{{ObjWorkTabl.workingInTheShift()}}</td>
-			<td >{{(ObjWorkTabl.workingInTheShift()*0.287).toFixed(1)}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.workingInTheShift(),0.287)}}</td>
 		</tr>
 		<tr>
 			<td class="tdLeft">Умывальная (1 кран на 20 чел.)</td>
 			<td >0,065</td>
 			<td >{{ObjWorkTabl.sumInTheShift()}}</td>
 			<td >-</td>
-			<td >{{(ObjWorkTabl.sumInTheShift() * 0.065).toFixed(1)}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.sumInTheShift(),0.065)}}</td>
 		</tr>
 		<tr>
 			<td class="tdLeft">Сушилка (не менее 4 м2)</td>
 			<td >0,15</td>
 			<td >-</td>
 			<td >{{ObjWorkTabl.workingInTheShift()}}</td>
-			<td >{{(ObjWorkTabl.workingInTheShift()*0.15).toFixed(1)< 4 ? 4 :(ObjWorkTabl.workingInTheShift()*0.15).toFixed(1)}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.workingInTheShift(),0.15)< 4 ? 4 :CalcHousehold(ObjWorkTabl.workingInTheShift(),0.15)}}</td>
 		</tr>
 		<tr>
 			<td class="tdLeft">Помещение для приема пищи (не менее 12 м2)</td>
 			<td >0,25</td>
 			<td >{{ObjWorkTabl.sumInTheShift()}}</td>
 			<td >-</td>
-			<td >{{(ObjWorkTabl.sumInTheShift()*0.25).toFixed(1)< 12 ? 12 :(ObjWorkTabl.sumInTheShift()*0.25).toFixed(1)}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.sumInTheShift(),0.25)< 12 ? 12 :CalcHousehold(ObjWorkTabl.sumInTheShift(),0.25)}}</td>
 		</tr>
 		<tr>
 			<td class="tdLeft">Помещение для обогрева рабочих(не менее 8 м2)</td>
 			<td >0,1</td>
 			<td >-</td>
 			<td >{{ObjWorkTabl.workingInTheShift()}}</td>
-			<td >{{(ObjWorkTabl.workingInTheShift()*0.1).toFixed(1) < 8 ? 8 : (ObjWorkTabl.workingInTheShift()*0.1).toFixed(1)}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.workingInTheShift(),0.1) < 8 ? 8 : CalcHousehold(ObjWorkTabl.workingInTheShift(),0.1)}}</td>
 		</tr>
 		<tr>   
 			<td class="tdLeft">Уборная</td>
 			<td >0,1</td>
 			<td >{{ObjWorkTabl.sumInTheShift()}}</td>
 			<td >-</td>
-			<td >{{(ObjWorkTabl.sumInTheShift()*0.1).toFixed(1);}}</td>
+			<td >{{CalcHousehold(ObjWorkTabl.sumInTheShift(),0.1);}}</td>
 		</tr>
 	</table>
 

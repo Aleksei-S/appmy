@@ -34,6 +34,7 @@ jobPos.controller('posCtrl', ['$scope','$http', function($scope,$http){
 
 
 
+ //elems = document.getElementsByTagName( '*' );
 
 
 

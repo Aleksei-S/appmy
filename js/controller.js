@@ -26,9 +26,8 @@ $scope.timeBuildingCeil = 0;
 $scope.table = new Array();          
 $scope.arrayMonth = new Array();      
 $scope.arrayYearsColdspan = new Array();
-$scope.Percent =  [];
-
-
+$scope.Percent = new Array(1);
+$scope.SummaPercent = 0;
 
 $scope.timeBuilding = 6;
 
@@ -40,7 +39,7 @@ function tableRow (arr, name="", total="0", CMP="0") {
     this[arr[i]+i] = new objValue();
   } 
 }
-
+ 
 
 $scope.createTable = function (oldTable){
   if (oldTable.length == 0) {
@@ -67,84 +66,132 @@ $scope.valueCheck = function (val) {
 }
 
 
-$scope.pressKey = function (e, nextId) {
- if (e.charCode == 13) {
-  var elem = document.getElementById(nextId);
-  elem.focus();
-}
-}
+
+$scope.$watch('timeBuildingCeil', function(newValue, oldValue, scope) {
+  $scope.Percent  = new Array($scope.timeBuildingCeil);
+  for (var i = $scope.Percent.length - 1; i >= 0; i--) {
+    $scope.Percent[i] = "-";
+  }
+});
+
+$scope.$watch('Percent', function(newValue, oldValue, scope) {
+  $scope.SummaPercent = 0;
+  for (var i = $scope.Percent.length - 1; i >= 0; i--) {
+    let a = $scope.Percent[i].replace('-', "0");
+    $scope.SummaPercent = $scope.SummaPercent + parseFloat(a);
+  }
+},true);
 
 
 
 $scope.calcPercentTable = function () {
-  if ($scope.timeBuildingCeil == 0 || $scope.timeBuildingCeil !== $scope.Percent.length) {return;}
+  if ($scope.timeBuildingCeil == 0) {return;}
+  if ($scope.SummaPercent != "100") {return;}
 
-
-
-
-for (var i = 0; i < $scope.table.length; i++) {
-
-
-  for (var n = $scope.rowCalculatePercent.length - 1; n >= 0; n--) {
-      if ($scope.table[i].name.indexOf($scope.rowCalculatePercent[n]) !== -1) {
-         for (key in $scope.table[i]) {
-          let m = 0;
-              if (key == "name" || key == "total" || key == "CMP") {continue;}
-              $scope.table[i][key].first = $scope.table[i].total * $scope.Percent[m];
-              $scope.table[i][key].second = 
-         }
+    for (var i = 0; i < $scope.table.length; i++) {
+      for (var n = $scope.rowCalculatePercent.length - 1; n >= 0; n--) {
+        if ($scope.table[i].name.indexOf($scope.rowCalculatePercent[n]) !== -1) {
+        let m = 0;
+         for (var key in $scope.table[i]) {
+          
+          if (key == "name" || key == "total" || key == "CMP") {continue;}
+          $scope.table[i][key].first = ($scope.table[i].total * $scope.Percent[m]*0.01).toFixed(2);
+          $scope.table[i][key].second =  ($scope.table[i].CMP * $scope.Percent[m]*0.01).toFixed(2);
+          m++;
+        }
       }
+    }
+  } 
+}
+
+
+
+
+
+
+
+var RowKalendarniiIndex = "";
+var elemDOM = "";
+
+$scope.addRow = function (){
+ if (RowKalendarniiIndex === "") {
+  $scope.table.splice(0, 0, new tableRow($scope.arrayMonth, "-"));
+} else {
+  $scope.table.splice(RowKalendarniiIndex+1, 0, new tableRow($scope.arrayMonth, "-"));
+}
+};
+
+$scope.deleteRow = function (){
+  if (RowKalendarniiIndex === "") {
+return;
+  }
+let lochNess = document.querySelector(".selected");
+        if (lochNess!== null) {
+          lochNess.classList.remove("selected");
+        }
+
+ $scope.table.splice(RowKalendarniiIndex, 1);
+ RowKalendarniiIndex = "";
+};
+
+ $scope.switchRow = function (str){
+
+  let num = "";
+  console.log(elemDOM.nextElementSibling );
+  let row = $scope.table[RowKalendarniiIndex];
+ if (str == "up" && -1 < RowKalendarniiIndex - 1) {
+  num = RowKalendarniiIndex - 1;
+  elemDOM = elemDOM.previousElementSibling;
+//$scope.clickRowKalendarnii(elemDOM.previousElementSibling);
+  } else if (str == "down" && RowKalendarniiIndex + 1 < ($scope.table.length)) {
+  num = RowKalendarniiIndex + 1; 
+  elemDOM = elemDOM.nextElementSibling;
+  } else {
+  return;
   }
 
-}
-
    
-
-  
-}
-
-
-
-$scope.Percent.
-
-
-    // function checkRowCalculate (row, arr) {
-    //   for (var i = 0; i < arr.length; i++) {
-    //     if (row.name.indexOf(arr[i]) !== -1) {
-    //       return true;
-    //     } else {
-    //       continue;
-    //     }
-    //   }
-    //   return false;
-    // }
-
-
-      //  if (!checkRowCalculate(row,$scope.rowCalculatePercent) || this.$parent.$last == true) {return;}
-      //  let lastKey = Object.keys(row)[Object.keys(row).length - 1];
-      //  let result = 0;
-      //  for (var key in row){
-      //   if (key == "name" || key == "total" || key == "CMP" || key == lastKey) {continue;}
-      //   if (row[key][attrs.calculateTable] == "-") {row[key][attrs.calculateTable] = "0";}
-      //   result = result + parseFloat(row[key][attrs.calculateTable]);
-      // }
-      // if (attrs.calculateTable == "first") {
-      //   row[lastKey][attrs.calculateTable] = row.total - result;
-      // } else {
-      //   row[lastKey][attrs.calculateTable] = row.CMP - result;
-      // }
+  $scope.table.splice(RowKalendarniiIndex, 1,  $scope.table[num]);
+  $scope.table.splice(num, 1,  row);
+  RowKalendarniiIndex = num;
+let lochNess = document.querySelector(".selected");
+        if (lochNess!== null) {
+          lochNess.classList.remove("selected");
+        }
+elemDOM.classList.toggle("selected");
 
 
 
 
 
-$scope.savePos = function (val) {
+
+ };
 
 
-  console.log($scope.objStockroom.table());
+  $scope.clickRowKalendarnii = function (currentTarget){
+    if (currentTarget.classList.contains("selected")) {
+      currentTarget.classList.remove("selected");
+       RowKalendarniiIndex = "";
+       elemDOM = "";
+    } else {
+      let lochNess = document.querySelector(".selected");
+        if (lochNess!== null) {
+          lochNess.classList.remove("selected");
+          RowKalendarniiIndex = "";
+           elemDOM = "";
+        }
+      elemDOM = currentTarget;
+      currentTarget.classList.toggle("selected");
+      RowKalendarniiIndex = $scope.table.indexOf(this.Row);
+    }
+  };
 
-  // console.log($scope.objStockroom.maxSummaYear());
-}
+
+
+
+
+
+
 
 
 
@@ -451,6 +498,14 @@ function tableHousehold() {
     restrict: 'E',
     templateUrl: 'views/directiv/tableHousehold.html',
     link: function($scope, elm, attrs, ctrl) {
+
+   $scope.CalcHousehold = function (val, coeff) {
+      if (val == undefined || coeff == "0") { return "-";}
+      return (val*coeff).toFixed(1);
+    }
+ 
+
+
     }
   };
 }
@@ -554,7 +609,6 @@ function tableResources() {
       let waterHouse;
       let oxyden;
       let coef = function (argument) {
-        console.log("2.7 * 1267 * coef()");
         if ($scope.coefficient == 0) {return 1;}
       };
       let summaPlusCoef = summa / (2.7 * 1267 * coef());
@@ -618,35 +672,6 @@ function tableResources() {
 
 
 
-angular.module('jobPos').directive('checkPercent', checkPercent);
-function checkPercent() {
-  return {
-    restrict: '',
-    link: function($scope, elm, attrs, ctrl) {
-      // ctrl.$formatters.unshift(function (fromValue) {
-      //   if (fromValue == "") { fromValue = 0;}
-      //   for (var i = 0; i < fromValue.length; i++) {
-      //     fromValue=fromValue[i] + "-";
-      //   }
-      //   return fromValue;
-      // });
-  //     ctrl.$parsers.push(function(inValue) {
-  //       inValue = inValue.replace(' ', "-");
-  //       if (inValue == 0 || inValue == "") {return inValue = "-";}
-  //       return inValue;
-  //     });
-  //     // $scope.pressKey = function (e, nextId) {
-  //     //  if (e.charCode == 13) {
-  //     //   var elem = document.getElementById(nextId);
-  //     //   elem.focus();
-  //     // }
-  //   // };
-  $scope.inputBlurPercent = function (e) {
-    $scope.Percent = e.target.value.split('-');
-  };
-   }
-};
-}
 
 
 
@@ -655,83 +680,6 @@ function checkPercent() {
 
 
 
-
-
-
-
-
-// // $scope.addRow = function (name){
-// //   $scope.table.splice(0, 0, new tableRow($scope.arrayMonth, name));
-// // };
-
-// // $scope.deleteRow = function (index){
-// //  $scope.table.splice(index, 1);
-// // };
-
-// // $scope.switchRow = function (index, str){
-// //  let row = $scope.table[index];
-// //  let num = "";
-
-// //  if (str == "up") {
-// //   num = index - 1;
-// //   } else {
-// //   num = index + 1;
-// //   }
-
-// //   if (-1 < num && num < ($scope.table.length)) {
-// //   $scope.table.splice(index, 1,  $scope.table[num]);
-// //   $scope.table.splice(num, 1,  row);
-// //   }
-// // };
-
-
-
-// // ///////////////FOR PERCENT
-// // $scope.clickPercent = function ($event, MonthObj){
-// //   let valueHide = MonthObj.value;
-// //   this.Month.value=""; 
-// //   this.showInput = true;
-// //   setTimeout(function () {
-// //     var elem = document.getElementById("edit");
-// //     elem.focus();
-// //     elem.value = valueHide;
-// //   },100);
-// // }
-
-// // $scope.inputPercentBlur = function (){
-// //   this.$parent.showInput = false;
-// //   this.$parent.Month.value = document.getElementById("edit").value;
-// //   checkRowPercent(this.$parent.$parent.arrayMonth);
-// //   refreshTable ();
-// // };
-
-// // function checkRowPercent (arrayMonth) {
-// //   let result = 100;
-// //   for (var i = 0; i < arrayMonth.length-1; i++) {
-// //     result = result - arrayMonth[i].value;
-// //   }
-// //   arrayMonth[arrayMonth.length-1].value = result;
-// // }
-// // ///////////////FOR PERCENT
-
-
-
-
-// //  // проценты расчет
-// //  function calculatePercentRow (row) {
-// //   let count = 0;
-// //   for (var key in row) {
-// //     if (key == "name" || key == "total" || key == "CMP") {
-// //      continue; 
-// //    }
-// //    row[key].first = row.total * $scope.arrayMonth[count].value / 100;
-// //    row[key].first =+ row[key].first.toFixed(2);
-
-// //    row[key].second = row.CMP * $scope.arrayMonth[count].value / 100;
-// //    row[key].second =+ row[key].second.toFixed(2);
-// //    count++;
-// //  } 
-// // }
 
 
 

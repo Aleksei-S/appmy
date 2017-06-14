@@ -2,10 +2,10 @@
 <div class="row">
 	<div class="btn-group col-sm-offset-1">
 	<button class="btn btn-default btn-sm" id="butCalculate" ng-click="calcPercentTable()">Рассчитать</button>
-	<button class="btn btn-default btn-sm" >Добавить строку</button>
-	    <button class="btn btn-default btn-sm">Удалить строку</button>
-		<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-up"></span></button>
-		<button class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-down"></span></button>
+	<button class="btn btn-default btn-sm" ng-click="addRow()">Добавить строку</button>
+	    <button class="btn btn-default btn-sm" ng-click="deleteRow()">Удалить строку</button>
+		<button class="btn btn-default btn-sm" ng-click="switchRow('up')"><span class="glyphicon glyphicon-arrow-up"></span></button>
+		<button class="btn btn-default btn-sm" ng-click="switchRow('down')"><span class="glyphicon glyphicon-arrow-down"></span></button>
 	</div>
 </div>
 
@@ -31,7 +31,7 @@
 			</tr>
 
 
-			<tr ng-repeat="Row in table track by $index">
+			<tr ng-repeat="Row in table track by $index" ng-click="clickRowKalendarnii($event.currentTarget)" >
 
 				<td >{{$index+1}}</td>
 				<td ng-repeat="(key, value) in Row track by $index">
@@ -50,23 +50,20 @@
 	<td ng-repeat="Month in arrayMonth track by $index" ng-click="clickPercent($event, Month)" data-change="false" >{{Month.value}}
 	<input type="text" class="form-control input-sm" id="edit" ng-if="showInput" ng-blur="inputPercentBlur()" >
 	</td>
-
 -->
 
 </tr>
 
-<tr >
+<tr ng-show="Percent.length>0">
 	<td > </td>
 	<td >Распределение капвложений по месяцам </td>
 	<td >100%</td>
 	<td >100%</td>
-	<td ng-repeat="Month in arrayMonth track by $index" ng-click="clickPercent($event, Month)" data-change="false" >{{Month.value}}
-	</td>
+	<td ng-repeat="cent in Percent track by $index">{{cent}}</td>
 
 </tr>
 
 </table>
 
-<button type="submit" ng-click="save()">Show</button>
 </div>
 </div>
