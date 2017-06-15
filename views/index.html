@@ -60,11 +60,11 @@
 						</div> 
 						<div class="col-md-8 col-sm-12 col-xs-12">
 							<div class="col-xs-12 col-md-12 col-sm-12 nopadding">
-								<table class="table table-bordered table-condensed ">
-								<tr>
-									<td ng-repeat="cent in Percent track by $index"><text-tabl text="Percent[$index]"></text-tabl></td>
-									<td>{{SummaPercent+"%"}}</td>
-								</tr>
+								<table class="table-Percent " >
+									<tr>
+										<td ng-repeat="cent in Percent track by $index" ><text-tabl  text="Percent[$index]"></text-tabl></td>
+										<td>{{SummaPercent+"%"}}</td>
+									</tr>
 
 								</table>
 							</div>
@@ -78,7 +78,8 @@
 
 				<div class="col-md-5 col-sm-11 ">
 					<div class="wel">
-						<div class="row bodycontainer ">
+
+						<div class="row">
 							<table class="table table-bordered table-hover table-condensed ">
 								<tr>
 									<td>gggggg</td>
@@ -102,14 +103,15 @@
 								</tr>
 							</table>
 						</div>
-					</div>
-					<div class="row">
 
-						<div class="btn-group col-sm-offset-1">
-							<button class="btn btn-default btn-sm" ng-click="savePos()">Сохранить</button>
-							<button class="btn btn-default btn-sm" ng-click="loadPos">Загрузить</button>
-							<button class="btn btn-default btn-sm">Выгрузить</button>
-							<button class="btn btn-default btn-sm">Удалить</button>
+						<div class="row row-padding">
+
+							<div class="btn-group col-sm-offset-1">
+								<button class="btn btn-default btn-sm" ng-click="savePos()">Сохранить</button>
+								<button class="btn btn-default btn-sm" ng-click="loadPos">Загрузить</button>
+								<button class="btn btn-default btn-sm">Выгрузить</button>
+								<button class="btn btn-default btn-sm">Удалить</button>
+							</div>
 						</div>
 
 					</div>

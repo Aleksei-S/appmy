@@ -1,10 +1,81 @@
-body .table-hover > tbody > tr:hover {
+/*--------------ШРИФТЫ-------------*/
+/*--------------ЦВЕТ Борда таблицы-------------*/
+/*--------------ЦВЕТ ВЫДЕЛЕНИЯ СТРОК-------------*/
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  padding-top: 15px;
+  /*-------------- ТАБЛИЦА -------------*/
+  /*-------------- Kalendarnii -------------*/
+  /*-------------- ТАБЛИЦА -------------*/
+}
+body div .row-padding {
+  padding-top: 10px;
+}
+body .table-Percent {
+  color: #666;
+  font-size: 12px;
+  border: #cccccc 1px solid;
+  border-collapse: separate;
+  border-radius: 4px;
+  overflow: hidden;
+  min-height: 32px;
+  max-height: 32px;
+}
+body .table-Percent tr {
+  text-align: center;
+  border-radius: 4px;
+}
+body .table-Percent tr td:first-child {
+  border-left: 0;
+}
+body .table-Percent tr td {
+  border-left: 1px solid #cccccc;
+}
+body .table-Percent td {
+  min-width: 45px;
+}
+body .table-Percent td p {
+  font-size: 12px;
+  vertical-align: bottom;
+  margin-bottom: 1px;
+}
+body .table-Percent td input {
+  max-width: 45px;
+}
+body .table-hover > tbody tr:hover {
   background-color: #E5E5E5;
   border-color: #BC1414!important;
-
-
 }
-
-body .table-hover > tbody > tr.selected  {
-      background-color: #D72750;
+body .table-hover > tbody tr.selected {
+  background-color: #c6d4db;
+}
+body .Kalendarnii {
+  color: #666;
+  font-size: 14px;
+  border: #cccccc 1px solid;
+  overflow: hidden;
+  min-height: 32px;
+  max-height: 32px;
+}
+body .Kalendarnii tr {
+  text-align: center;
+  border-radius: 4px;
+}
+body .Kalendarnii tr td:first-child {
+  border-left: 0;
+}
+body .Kalendarnii tr td {
+  border: 1px solid #cccccc;
+}
+body .Kalendarnii td {
+  min-width: 45px;
+}
+body .Kalendarnii td p {
+  font-size: 12px;
+  vertical-align: bottom;
+  margin-bottom: 1px;
+  text-align: center;
+}
+body .Kalendarnii td input {
+  max-width: 80px;
 }
