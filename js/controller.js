@@ -29,7 +29,6 @@ $scope.arrayYearsColdspan = new Array();
 $scope.Percent = new Array(1);
 $scope.SummaPercent = 0;
 
-$scope.timeBuilding = 6;
 
 function tableRow (arr, name="", total="0", CMP="0") {
   this.name = name;
@@ -39,7 +38,7 @@ function tableRow (arr, name="", total="0", CMP="0") {
     this[arr[i]+i] = new objValue();
   } 
 }
- 
+
 
 $scope.createTable = function (oldTable){
   if (oldTable.length == 0) {
@@ -88,12 +87,12 @@ $scope.calcPercentTable = function () {
   if ($scope.timeBuildingCeil == 0) {return;}
   if ($scope.SummaPercent != "100") {return;}
 
-    for (var i = 0; i < $scope.table.length; i++) {
-      for (var n = $scope.rowCalculatePercent.length - 1; n >= 0; n--) {
-        if ($scope.table[i].name.indexOf($scope.rowCalculatePercent[n]) !== -1) {
+  for (var i = 0; i < $scope.table.length; i++) {
+    for (var n = $scope.rowCalculatePercent.length - 1; n >= 0; n--) {
+      if ($scope.table[i].name.indexOf($scope.rowCalculatePercent[n]) !== -1) {
         let m = 0;
-         for (var key in $scope.table[i]) {
-          
+        for (var key in $scope.table[i]) {
+
           if (key == "name" || key == "total" || key == "CMP") {continue;}
           $scope.table[i][key].first = ($scope.table[i].total * $scope.Percent[m]*0.01).toFixed(2);
           $scope.table[i][key].second =  ($scope.table[i].CMP * $scope.Percent[m]*0.01).toFixed(2);
@@ -123,79 +122,140 @@ $scope.addRow = function (){
 
 $scope.deleteRow = function (){
   if (RowKalendarniiIndex === "") {
-return;
+    return;
   }
-let lochNess = document.querySelector(".selected");
-        if (lochNess!== null) {
-          lochNess.classList.remove("selected");
-        }
+  let lochNess = document.querySelector(".selected");
+  if (lochNess!== null) {
+    lochNess.classList.remove("selected");
+  }
 
- $scope.table.splice(RowKalendarniiIndex, 1);
- RowKalendarniiIndex = "";
+  $scope.table.splice(RowKalendarniiIndex, 1);
+  RowKalendarniiIndex = "";
 };
 
- $scope.switchRow = function (str){
+$scope.switchRow = function (str){
 
   let num = "";
   console.log(elemDOM.nextElementSibling );
   let row = $scope.table[RowKalendarniiIndex];
- if (str == "up" && -1 < RowKalendarniiIndex - 1) {
-  num = RowKalendarniiIndex - 1;
-  elemDOM = elemDOM.previousElementSibling;
+  if (str == "up" && -1 < RowKalendarniiIndex - 1) {
+    num = RowKalendarniiIndex - 1;
+    elemDOM = elemDOM.previousElementSibling;
 //$scope.clickRowKalendarnii(elemDOM.previousElementSibling);
-  } else if (str == "down" && RowKalendarniiIndex + 1 < ($scope.table.length)) {
+} else if (str == "down" && RowKalendarniiIndex + 1 < ($scope.table.length)) {
   num = RowKalendarniiIndex + 1; 
   elemDOM = elemDOM.nextElementSibling;
-  } else {
+} else {
   return;
+}
+
+
+$scope.table.splice(RowKalendarniiIndex, 1,  $scope.table[num]);
+$scope.table.splice(num, 1,  row);
+RowKalendarniiIndex = num;
+let lochNess = document.querySelector(".selected");
+if (lochNess!== null) {
+  lochNess.classList.remove("selected");
+}
+elemDOM.classList.toggle("selected");
+};
+
+
+$scope.clickRowKalendarnii = function (currentTarget){
+  if (currentTarget.classList.contains("selected")) {
+    currentTarget.classList.remove("selected");
+    RowKalendarniiIndex = "";
+    elemDOM = "";
+  } else {
+    let lochNess = document.querySelector(".selected");
+    if (lochNess!== null) {
+      lochNess.classList.remove("selected");
+      RowKalendarniiIndex = "";
+      elemDOM = "";
+    }
+    elemDOM = currentTarget;
+    currentTarget.classList.toggle("selected");
+    RowKalendarniiIndex = $scope.table.indexOf(this.Row);
+  }
+};
+
+
+////////////CCCOOOOOKIIIIE//////////////////////////
+// возвращает cookie с именем name, если есть, если нет, то undefined
+function getCookie(name) {
+  var matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function setCookie(name, value, options) {
+  options = options || {};
+
+  var expires = options.expires;
+
+  if (typeof expires == "number" && expires) {
+    var d = new Date();
+    d.setTime(d.getTime() + expires * 1000);
+    expires = options.expires = d;
+  }
+  if (expires && expires.toUTCString) {
+    options.expires = expires.toUTCString();
   }
 
-   
-  $scope.table.splice(RowKalendarniiIndex, 1,  $scope.table[num]);
-  $scope.table.splice(num, 1,  row);
-  RowKalendarniiIndex = num;
-let lochNess = document.querySelector(".selected");
-        if (lochNess!== null) {
-          lochNess.classList.remove("selected");
-        }
-elemDOM.classList.toggle("selected");
+  value = encodeURIComponent(value);
 
+  var updatedCookie = name + "=" + value;
 
-
-
-
-
- };
-
-
-  $scope.clickRowKalendarnii = function (currentTarget){
-    if (currentTarget.classList.contains("selected")) {
-      currentTarget.classList.remove("selected");
-       RowKalendarniiIndex = "";
-       elemDOM = "";
-    } else {
-      let lochNess = document.querySelector(".selected");
-        if (lochNess!== null) {
-          lochNess.classList.remove("selected");
-          RowKalendarniiIndex = "";
-           elemDOM = "";
-        }
-      elemDOM = currentTarget;
-      currentTarget.classList.toggle("selected");
-      RowKalendarniiIndex = $scope.table.indexOf(this.Row);
+  for (var propName in options) {
+    updatedCookie += "; " + propName;
+    var propValue = options[propName];
+    if (propValue !== true) {
+      updatedCookie += "=" + propValue;
     }
-  };
+  }
+  document.cookie = updatedCookie;
+  console.log( document.cookie );
+}
+
+function deleteCookie(name) {
+  setCookie(name, "", {
+    expires: -1 ////////expires: 3600
+  })
+}
+
+// document.cookie = "arrRow=" + angular.toJson($scope.arrRow)
+// + "; path=/; expires=" + (new Date(Date.now() + 7 * 86400).toGMTString());
+// console.log( document.cookie );
 
 
 
+$scope.delCookie = function (){
+  deleteCookie("table");
+};
 
+$scope.setCookie = function (){
+ getCookie("table");
+ let gg =  getCookie("table");
 
+    console.log(gg);
+    console.log(gg == $scope.table);
+};
 
+$scope.saveCookie = function (){
+  setCookie("table", $scope.table, 120);
 
+};
 
 
 
 }]);
+
+
+
+
+
+
 
 
 jobPos.directive('tableKalendarnii',  ['$compile', function($compile){
@@ -315,7 +375,6 @@ function calculateTable() {
       $scope.calculate(attrs.key);
     });
 
-
      $scope.calculate = function (val) {
 
        if (attrs.key == "total" || attrs.key == "CMP") {
@@ -346,7 +405,7 @@ function calculateTable() {
           let sum = $scope.$parent.$parent.table[i][key].replace('-', "0");
           result = result + parseFloat(sum);
         }
-        other[key] = totalRow[key] - result;
+        other[key] = (totalRow[key] - result).toFixed(2);
       };
 
 
@@ -360,9 +419,9 @@ function calculateTable() {
         result = result + parseFloat(row[key][attrs.calculateTable]);
       }
       if (attrs.calculateTable == "first") {
-        row[lastKey][attrs.calculateTable] = row.total - result;
+        row[lastKey][attrs.calculateTable] = (row.total - result).toFixed(2);
       } else {
-        row[lastKey][attrs.calculateTable] = row.CMP - result;
+        row[lastKey][attrs.calculateTable] = (row.CMP - result).toFixed(2);
       }
 
     };
@@ -389,6 +448,7 @@ function calculateTable() {
 
       if (TotalRow[key][attrs.calculateTable] == "-") {TotalRow[key][attrs.calculateTable] = 0;}
       ResultRow[key][attrs.calculateTable] =  TotalRow[key][attrs.calculateTable] - result;
+      ResultRow[key][attrs.calculateTable] =  (ResultRow[key][attrs.calculateTable]).toFixed(2);
     };
 
     function checkRowCalculate (row, arr) {
@@ -499,15 +559,15 @@ function tableHousehold() {
     templateUrl: 'views/directiv/tableHousehold.html',
     link: function($scope, elm, attrs, ctrl) {
 
-   $scope.CalcHousehold = function (val, coeff) {
+     $scope.CalcHousehold = function (val, coeff) {
       if (val == undefined || coeff == "0") { return "-";}
       return (val*coeff).toFixed(1);
     }
- 
 
 
-    }
-  };
+
+  }
+};
 }
 
 /////////////////////////////////////////////Stockroom TABLE//////////////////////////////////////////

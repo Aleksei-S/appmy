@@ -8,8 +8,10 @@
 /*--------------ЦВЕТ ВЫДЕЛЕНИЯ СТРОК-------------*/
 @rowColorHover:#C6D4DB;
 
+@rowColorHoverNodelect:#EDEDED;
 
-
+/*--------------FONT SIZE-------------*/
+@fontSizeTab:14px;
 
 
 
@@ -41,17 +43,21 @@ body {
 		tr td:first-child{
 			border-left: 0;
 		}
+
 		tr td {
 			border-left: 1px solid @bordColor;
 		}
-		td { 
-			min-width: 45px;
+		td {
+			overflow: hidden; 
+			min-width: 30px;
 			p {
 				font-size:12px;
 				vertical-align: bottom;
 				margin-bottom: 1px;
 			}
 			input {
+				overflow: hidden;
+				min-width: 34px;
 				max-width: 45px;
 			}
 		}
@@ -59,8 +65,8 @@ body {
 	}
 	.table-hover > tbody  {
 		tr:hover {
-			background-color: #E5E5E5;
-			border-color: #BC1414!important;
+			background-color: @rowColorHoverNodelect;
+
 		}
 		tr.selected  {
 			background-color: @rowColorHover;
@@ -69,38 +75,79 @@ body {
 
 
 	/*-------------- Kalendarnii -------------*/
-	.Kalendarnii {
+	table.Kalendarnii {
 		color:#666;
-		font-size:14px;
+		font-size:@fontSizeTab;
 		border:@bordColor 1px solid;
 		overflow: hidden;
 		min-height: 32px;
-		max-height: 32px;
-		tr{
-			text-align: center;
-			border-radius:4px;
-		}
-		tr td:first-child{
-			border-left: 0;
-		}
+		max-height: 60px;
+		text-align: center;
 		tr td {
 			border: 1px solid @bordColor;
-
 		}
+		td:first-child{
+			max-width: 30px;
+		}
+
+		td.tdLeft{
+			text-align: left;
+		}
+
 		td { 
-			min-width: 45px;
+
+			min-width: 55px;
 			p {
-				font-size:12px;
+				font-size:@fontSizeTab;
 				vertical-align: bottom;
 				margin-bottom: 1px;
-				text-align: center;
 			}
 			input {
-				max-width: 80px;
+				max-width: 100%;
 			}
 		}
 
 	}
+
+	/*-------------- ТАБЛИЦА -------------*/
+
+	table.typicalTab {
+		color:#666;
+		font-size:@fontSizeTab;
+		border:@bordColor 1px solid;
+		overflow: hidden;
+		min-height: 32px;
+		max-height: 60px;
+border-collapse: collapse;
+		text-align: center;
+
+		tr td {
+			border: 1px solid @bordColor;
+			border-collapse: collapse;
+			vertical-align: middle;
+
+		}
+
+
+		td.tdLeft{
+			text-align: left;
+		}
+
+		td { 
+
+			min-width: 55px;
+			input {
+	
+				max-width: 100%;
+			}
+		}
+
+	}
+
+
+
+
+
 
 	/*-------------- ТАБЛИЦА -------------*/
 

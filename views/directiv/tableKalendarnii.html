@@ -34,12 +34,13 @@
 			<tr ng-repeat="Row in table track by $index" ng-click="clickRowKalendarnii($event.currentTarget)" >
 
 				<td >{{$index+1}}</td>
-				<td ng-repeat="(key, value) in Row track by $index">
+				<td ng-repeat="(key, value) in Row track by $index" ng-class="key=='name' ? 'tdLeft' : 'tdCentr' ">
 
+<span> <!-- ng-class="key=='name'||key=='CMP'||key=='total' ? '' :'underLine'" -->
 					<text-tabl ng-if="!valueCheck(value)" calculate-table text="Row[key]" key="{{key}}"></text-tabl>
 
 					<text-tabl ng-if="valueCheck(value)" calculate-table="first" text="Row[key].first" key="{{key}}"></text-tabl>
-
+</span>
 					<text-tabl ng-if="valueCheck(value)" calculate-table="second" text="Row[key].second" key="{{key}}"></text-tabl>
 
 				</td>
