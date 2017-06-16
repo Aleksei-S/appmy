@@ -2,10 +2,13 @@
 
 
 
-var jobPos = angular.module('jobPos', []);
+var jobPos = angular.module('jobPos', ['ngCookies']);
 
 
-jobPos.controller('PosCtrl', ['$scope', function($scope){
+jobPos.controller('PosCtrl', ['$scope','$cookies', function($scope, $cookies){
+
+
+
 
 //$scope.timeBuilding = myService.timeBuilding();
 //$scope.dateBeginBuilding = myService.dateBeginBuilding;
@@ -41,6 +44,7 @@ function tableRow (arr, name="", total="0", CMP="0") {
 
 
 $scope.createTable = function (oldTable){
+  console.log($scope.table);
   if (oldTable.length == 0) {
     for (var i = 0; i < $scope.STRtable.length; i++) {
       $scope.table.push(new tableRow($scope.arrayMonth, $scope.STRtable[i]));
@@ -67,6 +71,7 @@ $scope.valueCheck = function (val) {
 
 
 $scope.$watch('timeBuildingCeil', function(newValue, oldValue, scope) {
+  console.log('$watchGroup timeBuildingCeil');
   $scope.Percent  = new Array($scope.timeBuildingCeil);
   for (var i = $scope.Percent.length - 1; i >= 0; i--) {
     $scope.Percent[i] = "-";
@@ -215,7 +220,6 @@ function setCookie(name, value, options) {
     }
   }
   document.cookie = updatedCookie;
-  console.log( document.cookie );
 }
 
 function deleteCookie(name) {
@@ -230,22 +234,81 @@ function deleteCookie(name) {
 
 
 
+
 $scope.delCookie = function (){
   deleteCookie("table");
+  deleteCookie("timeBuilding");
+  deleteCookie("timeBuildingCeil");
+  deleteCookie("myFavorite");
+
 };
+
+
+
+
+
+
+
 
 $scope.setCookie = function (){
- getCookie("table");
- let gg =  getCookie("table");
 
-    console.log(gg);
-    console.log(gg == $scope.table);
+  var favoriteCookie = $cookies.get('myFavorite');
+  
+  console.log(favoriteCookie);
+
+
+// setTimeout($scope.table=angular.fromJson(getCookie("table")), 52);
+//  setTimeout($scope.timeBuilding=angular.fromJson(getCookie("timeBuilding")), 1);
+//  setTimeout($scope.timeBuildingCeil=angular.fromJson(getCookie("timeBuildingCeil")), 2);
+
+//$scope.timeBuildingCeil=getCookie("timeBuildingCeil");
+//$scope.$apply($scope.timeBuildingCeil);
+
+
+ // let gg =  getCookie("timeBuildingCeil");
+
+ // console.log(typeof(angular.fromJson(gg)));
+
+// $scope.table=angular.fromJson(gg);
+//$scope.table= angular.fromJson(gg);
+    // console.log(gg);
+    // console.log(gg == $scope.table);
+  };
+
+  $scope.saveCookie = function (){
+
+   $cookies.put('myFavorite', 'timeBuildingCeil');
+
+// //setCookie("timeBuilding", $scope.timeBuilding, 120);
+// //setCookie("timeBuildingCeil", $scope.timeBuildingCeil, 120);
+
+//   setCookie("timeBuilding", angular.toJson($scope.timeBuilding), 120);
+//   setCookie("timeBuildingCeil", angular.toJson($scope.timeBuildingCeil), 120);
+
+//  setCookie("table", angular.toJson($scope.table), 120);
+
+
+
+
+
 };
 
-$scope.saveCookie = function (){
-  setCookie("table", $scope.table, 120);
 
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -274,11 +337,13 @@ jobPos.directive('tableKalendarnii',  ['$compile', function($compile){
     "Dec" : "декабрь"
   };
   return {
+    priority: 10,
     restrict: 'E',
     templateUrl: 'views/directiv/tableKalendarnii.html',
     link: function($scope, elm, attrs, ctrl) {
 
       $scope.$watchGroup(['timeBuilding', 'dateBeginBuilding'], function(newValue, oldValue, scope) {
+        console.log($scope.table);
         //if (newValue == oldValue) {return;}
         let oldTable = $scope.table;   //save old
 
@@ -508,6 +573,7 @@ function checkTimeBuilding() {
 angular.module('jobPos').directive('tableWork', tableWork);
 function tableWork() {
   return {
+    priority: 0,
     restrict: 'E',
     templateUrl: 'views/directiv/tableWork.html',
 
@@ -578,37 +644,38 @@ angular.module('jobPos').directive('tableStockroom', tableStockroom);
 
 function tableStockroom() {
   return {
-   restrict: 'E',
-   templateUrl: 'views/directiv/tableStockroom.html',
-   link: function($scope, elm, attrs, ctrl) {
+    priority: 0,
+    restrict: 'E',
+    templateUrl: 'views/directiv/tableStockroom.html',
+    link: function($scope, elm, attrs, ctrl) {
 
 
-    $scope.coefficient=0;
+      $scope.coefficient=0;
 
-
-    function objStockroom () {
-     this.arrSummaYear = function () {
-
-      let resultArr = [];
-      let summa = 0;
-      for (var key in $scope.table[$scope.table.length-1]) {
-        if ($scope.valueCheck($scope.table[$scope.table.length-1][key])) {
-          let val = $scope.table[$scope.table.length-1][key].second;
-          if (val == "-") {val = "0";}
-          summa = summa + parseFloat(val);
-          if (key.indexOf('январь') !== -1 ) {
-           resultArr.push(summa);
-           summa = 0;
-         }
-       }
-     }
+      function objStockroom () {
+       this.arrSummaYear = function () {
+        
+if ($scope.table==undefined) {return [0];}////mb i net
+let resultArr = [];
+let summa = 0;
+for (var key in $scope.table[$scope.table.length-1]) {
+  if ($scope.valueCheck($scope.table[$scope.table.length-1][key])) {
+    let val = $scope.table[$scope.table.length-1][key].second;
+    if (val == "-") {val = "0";}
+    summa = summa + parseFloat(val);
+    if (key.indexOf('январь') !== -1 ) {
      resultArr.push(summa);
-     return resultArr;
-   };
+     summa = 0;
+   }
+ }
+}
+resultArr.push(summa);
+return resultArr;
+};
 
-   this.maxSummaYear = function () { 
-    return Math.max(...this.arrSummaYear());   
-  };     
+this.maxSummaYear = function () { 
+  return Math.max(...this.arrSummaYear());   
+};     
 
 
 
@@ -648,6 +715,7 @@ function tableResources() {
       arrSummaYear : arrSummaYear,
       table : table(),
       visi : function () {
+        console.log('705 visi');
         if ( this.arrSummaYear.length < 2) {
           return true;
         } else { return false;}
@@ -722,8 +790,6 @@ function tableResources() {
   }
 };
 }
-
-
 
 
 
