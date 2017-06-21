@@ -37,15 +37,15 @@
 				<td ng-repeat="(key, value) in Row track by $index" ng-class="key=='name' ? 'tdLeft' : 'tdCentr' ">
 
 <span> <!-- ng-class="key=='name'||key=='CMP'||key=='total' ? '' :'underLine'" -->
-					<text-tabl ng-if="!valueCheck(value)" calculate-table text="Row[key]" key="{{key}}"></text-tabl>
+					<text-tabl ng-if="!Row[key].hasOwnProperty('first')" calculate-table text="Row[key]" key="{{key}}"></text-tabl>
 
-					<text-tabl ng-if="valueCheck(value)" calculate-table="first" text="Row[key].first" key="{{key}}"></text-tabl>
+					<text-tabl ng-if="Row[key].hasOwnProperty('first')" calculate-table="first" text="Row[key].first" key="{{key}}"></text-tabl>
 </span>
-					<text-tabl ng-if="valueCheck(value)" calculate-table="second" text="Row[key].second" key="{{key}}"></text-tabl>
+					<text-tabl ng-if="Row[key].hasOwnProperty('first')" calculate-table="second" text="Row[key].second" key="{{key}}"></text-tabl>
 
 				</td>
 
-<!--
+<!--           Row[key].hasOwnProperty('first')
 
 <td ng-repeat="(key, value) in row"><text-tabl text="row[key]"></text-tabl><text-tabl text="2"></text-tabl></td>
 	<td ng-repeat="Month in arrayMonth track by $index" ng-click="clickPercent($event, Month)" data-change="false" >{{Month.value}}

@@ -22,34 +22,34 @@
 					<tr>
 						<td class="tdLeft">Склад материально-технический отапливаемый</td>
 						<td >24,0</td>
-						<td >{{objStockroom.maxSummaYear()}}<br>k=2,7х1267х{{coefficient}}</td>
-						<td >{{objStockroom.maxSummaYear() == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*coefficient)*24).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear}}<br>k=2,7х1267х{{coefficient}}</td>
+						<td >{{objStockroom.maxSummaYear == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear/(2.7*1267*coefficient)*24).toFixed(2)}}</td>
 					</tr>
 
 					<tr>
 						<td class="tdLeft">Склад материально-технический не отапливаемый</td>
 						<td >29,0</td>
 						<td >-"-</td>
-						<td >{{objStockroom.maxSummaYear() == 0 || coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*coefficient)*29).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear == 0 || coefficient == 0 ? '0' :(objStockroom.maxSummaYear/(2.7*1267*coefficient)*29).toFixed(2)}}</td>
 					</tr>
 
 					<tr>
 						<td class="tdLeft">Склад для хранения материалов (цемента, гипса, извести и т.д.)</td>
 						<td >21,2</td>
 						<td >-"-</td>
-						<td >{{objStockroom.maxSummaYear() == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*coefficient)*21.2).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear/(2.7*1267*coefficient)*21.2).toFixed(2)}}</td>
 					</tr>
 					<tr>
 						<td class="tdLeft">Навес</td>
 						<td >13,0</td>
 						<td >-"-</td>
-						<td >{{objStockroom.maxSummaYear() == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*coefficient)*13).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear/(2.7*1267*coefficient)*13).toFixed(2)}}</td>
 					</tr>
 					<tr>
 						<td class="tdLeft">Открытые площадки</td>
 						<td >300,0</td>
 						<td >-"-</td>
-						<td >{{objStockroom.maxSummaYear() == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear()/(2.7*1267*coefficient)*300).toFixed(2)}}</td>
+						<td >{{objStockroom.maxSummaYear == 0  || coefficient == 0 ? '0' :(objStockroom.maxSummaYear/(2.7*1267*coefficient)*300).toFixed(2)}}</td>
 					</tr>
 
 				</table>
