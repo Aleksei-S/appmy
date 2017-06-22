@@ -450,44 +450,46 @@ angular.module('jobPos').directive('tableKalendarnii', ['$compile', function($co
   };
 }]);
 
+
 angular.module('jobPos').directive( 'textTabl', function ($compile) {
   return {
-    restrict: 'E',
-    scope: { text: '=', key: '@'},
-    template: '<p ng-click="clickOnText()">{{text}}</p>',
-    replace: true,
-    controller: function ( $scope, $element ) {
-      $scope.clickOnText = function () {
-        var newElement = $compile("<my-input mytext='text' mykey='{{key}}'></my-dir>")($scope);
-        $element.replaceWith($compile(newElement)($scope));
-        setTimeout(function () {
-          var elem = document.getElementById("edit");
-          elem.focus();
-          elem.selectionStart = elem.value.length;
-        },100);
-      };
+  restrict: 'E',
+  scope: { text: '=', key: '@'},
+  template: '<p ng-show="showInput" ng-click="clickOnText()">{{text}}</p><my-input ng-show="!showInput" mytext="text" mykey="{{key}}"></my-dir>',
+  replace: false,
+  controller: function ( $scope, $element ) {
+  $scope.showInput=true;
+  $scope.clickOnText = function () {
+    $scope.showInput=false;
+    setTimeout(function () {
+      var elem = $element[0].firstChild.nextSibling;
+     elem.focus();
+     },100);
+  };     
 
-    },
+
+  },
   };
 });
 
 angular.module('jobPos').directive('myInput', function($compile){
   return {
-    restrict: 'E',
-    scope: { mytext: '=', mykey: '@' },
-    template: '<input type="text" check-Num id="edit" ng-model="mytext" ng-blur="inputBlur(mytext)" ng-keypress="pressKeyboard($event)" class="form-control input-sm">',
-    replace: true,
-    controller: function ( $scope, $element ) {
-      $scope.inputBlur = function (event) {
-        var newElement = $compile('<text-tabl text="mytext"></text-tabl>')($scope);
-        $element.replaceWith($compile(newElement)($scope));
-      };
-      $scope.pressKeyboard = function (e) {
-        if (e.charCode == 13) {
-          $scope.inputBlur($element[0].value);
-        }
-      };
-    },
+  restrict: 'E',
+  scope: { mytext: '=', mykey: '@' },
+  template: '<input type="text" check-Num ng-model="mytext" ng-blur="inputBlur(mytext)" ng-keypress="pressKeyboard($event)" class="form-control input-sm">',
+  replace: true,
+  controller: function ( $scope, $element ) {
+
+   $scope.inputBlur = function (event) {
+  $scope.$parent.showInput =true; 
+   };
+
+  $scope.pressKeyboard = function (e) {
+  if (e.charCode == 13) {
+  $scope.inputBlur();
+  }
+  };
+  },
   };
 });
 
@@ -513,42 +515,20 @@ function checkNum() {
 
 
 
-//angular.module('jobPos').directive('tableStockroom', ['dataTableStockroom', function(dataTableStockroom){
 
 
 
 
-// angular.module('jobPos').directive('calculateTable', calculateTable);
-// function calculateTable() {
-
-
-  angular.module('jobPos').directive('calculateTable', ['dataTableStockroom','dataTable', function(dataTableStockroom, dataTable){
+angular.module('jobPos').directive('calculateTable', ['dataTableStockroom','dataTable', function(dataTableStockroom, dataTable){
     return {
       require: '^textTabl',
       link: function($scope, elm, attrs, ctrl) {
-        console.log(attrs.text);
 
-
-        // $scope.$watch(attrs.text, function(newValue, oldValue, scope){
-        //   console.log('watch');
-        //   if (newValue == oldValue) {return;}
-        //   $scope.calculate(attrs.key);
-        // });
-
-
-        $scope.$watch("table", function(newValue, oldValue, scope){
-        //  console.log('watch');
+        $scope.$watch(attrs.text, function(newValue, oldValue, scope){
+          console.log('watch');
           if (newValue == oldValue) {return;}
           $scope.calculate(attrs.key);
-        }, true);
-
-//  $scope.$watch(dataTable.table, function(newValue, oldValue, scope){
-
-// console.log("dataTable.tabledataTable.tabledataTable.tabledataTable.tabledataTable.table");
-
-// $scope.calculate(attrs.key);
-//  },true);
-
+        });
 
 
         $scope.calculate = function (val) {
@@ -602,21 +582,12 @@ function checkNum() {
           }
 
 
-
-
-
-
-
         //VSEGOOO
         if (row == $scope.table[$scope.table.length-1]) {
           console.log('vsego');
           dataTableStockroom.getArrSummaYear(row);
         }
-
-
-
-
-
+        //VSEGOOO
 
         };
 
@@ -655,9 +626,6 @@ function checkNum() {
           }
           return false;
         }
-
-
-
     }
   };
 }]);
@@ -729,9 +697,7 @@ angular.module('jobPos').directive('tableWork', ['dataTableWork','dataTableHouse
     restrict: 'E',
     templateUrl: 'views/directiv/tableWork.html',
     link: function (scope, element, attrs) {
-
       scope.workCapacity = 0;
-
       scope.$watchGroup(['timeBuilding', 'workCapacity'], function(newValue, oldValue, scope) {
         if (newValue == oldValue) {return;}
         if ( scope.timeBuilding == 0 || scope.workCapacity == 0) {return;}
@@ -793,7 +759,7 @@ angular.module('jobPos').service('dataTableHousehold', ['dataTableWork', functio
  return {
  restrict: 'E',
  templateUrl: 'views/directiv/tableHousehold.html',
-link: function($scope, elm, attrs, ctrl) {
+  link: function($scope, elm, attrs, ctrl) {
 
  }
  };
@@ -810,65 +776,36 @@ link: function($scope, elm, attrs, ctrl) {
 
 angular.module('jobPos').service('dataTableStockroom', function(){
 
-// this.getArrSummaYear = function (table) {
-//     console.log("tableStockroom");
+  this.getArrSummaYear = function (row) {
+      console.log("tableStockroom");
 
-//   if (table==undefined) {return [0];}////mb i net
-//   this.arrSummaYear = [];
-//   let summa = 0;
-//     for (var key in table[table.length-1]) {
 
-//       if (typeof(table[table.length-1][key]) == "object") {
-//         let val = table[table.length-1][key].second;
-//         if (val == "-") {val = "0";}
-//         summa = summa + parseFloat(val);
-//         if (key.indexOf('январь') !== -1 ) {
-//          this.arrSummaYear.push(summa);
-//          summa = 0;
-//         }
-//      }
-//     }
-//   this.arrSummaYear.push(summa);
-//   this.getMaxSummaYear();
-// };
+    this.arrSummaYear = [];
+    let summa = 0;
+      for (var key in row) {
 
-this.getArrSummaYear = function (row) {
-    console.log("tableStockroom");
+        if (typeof(row[key]) == "object") {
+          let val = row[key].second;
+          if (val == "-") {val = "0";}
+          summa = summa + parseFloat(val);
+          if (key.indexOf('декабрь') !== -1 ) {
+           this.arrSummaYear.push(summa);
+           summa = 0;
+          }
+       }
+      }
+    this.arrSummaYear.push(summa);
+    this.getMaxSummaYear();
+  };
 
+
+  this.getMaxSummaYear = function () { 
+    this.maxSummaYear = Math.max(...this.arrSummaYear);   
+  };     
 
   this.arrSummaYear = [];
-  let summa = 0;
-    for (var key in row) {
-
-      if (typeof(row[key]) == "object") {
-        let val = row[key].second;
-        if (val == "-") {val = "0";}
-        summa = summa + parseFloat(val);
-        if (key.indexOf('январь') !== -1 ) {
-         this.arrSummaYear.push(summa);
-         summa = 0;
-        }
-     }
-    }
-  this.arrSummaYear.push(summa);
-  this.getMaxSummaYear();
-};
-
-
-this.getMaxSummaYear = function () { 
-  this.maxSummaYear = Math.max(...this.arrSummaYear);   
-};     
-
-
-this.arrSummaYear = [];
-this.maxSummaYear = 0;
-
+  this.maxSummaYear = 0;
 });
-
-
-
-
-
 
 angular.module('jobPos').directive('tableStockroom', ['dataTableStockroom', function(dataTableStockroom){
 
@@ -878,160 +815,184 @@ angular.module('jobPos').directive('tableStockroom', ['dataTableStockroom', func
     templateUrl: 'views/directiv/tableStockroom.html',
     link: function($scope, elm, attrs, ctrl) {
 
-
-$scope.coefficient=0;
-$scope.objStockroom = dataTableStockroom;
-
-
-//        function objStockroom () {
-//         this.arrSummaYear = function () {
-// console.log("tableStockroom");
-// if ($scope.table==undefined) {return [0];}////mb i net
-// let resultArr = [];
-// let summa = 0;
-// for (var key in $scope.table[$scope.table.length-1]) {
-  
-//   if (typeof($scope.table[$scope.table.length-1][key]) == "object") {
-//     let val = $scope.table[$scope.table.length-1][key].second;
-//     if (val == "-") {val = "0";}
-//     summa = summa + parseFloat(val);
-//     if (key.indexOf('январь') !== -1 ) {
-//      resultArr.push(summa);
-//      summa = 0;
-//    }
-//  }
-// }
-// resultArr.push(summa);
-// return resultArr;
-// };
-
-// this.maxSummaYear = function () { 
-//   return Math.max(...this.arrSummaYear());   
-// };     
-
-
-
-
-// $scope.objStockroom = new objStockroom();
-
+    $scope.coefficient=0;
+    $scope.objStockroom = dataTableStockroom;
 
     }
   };
- }]);
-
-
-
-
+}]);
 
 /////////////////////////////////////////////Resources TABLE//////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////// Resources TABLE//////////////////////////////////////////
 
+angular.module('jobPos').service('dataTableResources', function(){
+
+function ResourcesOBJcreate (summa, coefic) {
+      let electric;
+      let oil;
+      let vapor;
+      let compresAir;
+      let waterHouse;
+      let oxyden;
+      let coef = coefic;
+      let summaPlusCoef = summa / (2.7 * 1267 * coef);
+      if (summaPlusCoef < 0.750) {
+        electric = "205";
+        oil = "97";
+        vapor = "200";
+        compresAir = "3.9";
+        waterHouse = "0.3";
+        oxyden = "4400";
+      } else if (0.749 < summaPlusCoef && summaPlusCoef < 1.250) {
+        electric = "185";
+        oil = "69";
+        vapor = "185";
+        compresAir = "3.2";
+        waterHouse = "0.23";
+        oxyden = "4400";
+      } else if (1.249 < summaPlusCoef && summaPlusCoef < 1.750) {
+        electric = "140";
+        oil = "52";
+        vapor = "160";
+        compresAir = "3.2";
+        waterHouse = "0.2";
+        oxyden = "4400";
+      } else if (1.749 < summaPlusCoef && summaPlusCoef < 2.250) {
+        electric = "100";
+        oil = "44";
+        vapor = "140";
+        compresAir = "2.6";
+        waterHouse = "0.16";
+        oxyden = "4400";
+      } else if (2.249 < summaPlusCoef) {
+        electric = "70";
+        oil = "40";
+        vapor = "130";
+        compresAir = "2.6";
+        waterHouse = "0.16";
+        oxyden = "4400";
+      } else{
+        electric = "-";
+        oil = "-";
+        vapor = "-";
+        compresAir = "-";
+        waterHouse = "-";
+        oxyden = "-";
+      }
+
+
+      return{
+        summa : summa,
+        electric : electric,
+        oil : oil,
+        vapor : vapor,
+        compresAir : compresAir,
+        waterHouse : waterHouse,
+        oxyden : oxyden
+      }
+    };
+
+
+this.getArrTable = function (coefficient, arrSummaYear) {
+   this.arrSummaYearResources = [];
+      for (var i = 0; i < arrSummaYear.length; i++) {
+         this.arrSummaYearResources.push(new ResourcesOBJcreate(arrSummaYear[i], coefficient));
+       };    
+      this.coefficient = coefficient;
+      this.arrSummaYear = arrSummaYear;
+      this.getvisi();
+    }
+    this.getvisi = function () {
+      console.log('705 visi');
+            if ( this.arrSummaYear.length < 2) {
+              this.visi = true;
+            } else { 
+              this.visi = false;
+            }
+    }
+
+
+  this.arrSummaYearResources = []; 
+  this.coefficient = 0;
+  this.arrSummaYear = [];
+  this.visi = true;
+
+
+this.getArrResources = function (coefficient) {
+this.objResourcesArr =  [];
+  for (var i = 0; i < this.arrSummaYearResources.length; i++) {
+    function checkval () {
+      
+    }
+
+
+    let electric = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].electric*1.02).toFixed(2);
+    let oil = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oil*1.02).toFixed(2);
+    let vapor = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].vapor*1.02).toFixed(2);
+    let compresAir = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].compresAir*1.03).toFixed(2);
+    let waterHouse = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].waterHouse*1.03).toFixed(2);
+    let oxyden = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oxyden*1.03).toFixed(2);
+
+    this.objResourcesArr.push(new this.objResources(electric, oil, vapor, compresAir, waterHouse, oxyden, 
+                            this.arrSummaYearResources[i].electric, this.arrSummaYearResources[i].oil, 
+                            this.arrSummaYearResources[i].vapor, this.arrSummaYearResources[i].compresAir, 
+                            this.arrSummaYearResources[i].waterHouse,  this.arrSummaYearResources[i].oxyden));
+  }
+
+
+}
+
+this.objResourcesArr = [];
+
+this.objResources = function (electric, oil, vapor, compresAir, waterHouse, oxyden, electricCoef, oilCoef, vaporCoef, compresAirCoef, waterHouseCoef, oxydenCoef){
+  this.electric = electric;
+  this.oil = oil;
+  this.vapor = vapor;
+  this.compresAir = compresAir;
+  this.waterHouse = waterHouse;
+  this.oxyden = oxyden;
+  this.electricCoef = electricCoef;
+  this.oilCoef = oilCoef;
+  this.vaporCoef = vaporCoef;
+  this.compresAirCoef = compresAirCoef;
+  this.waterHouseCoef = waterHouseCoef;
+  this.oxydenCoef = oxydenCoef;
+}
 
 
 
 
-// angular.module('jobPos').directive('tableResources', tableResources);
+});
 
-// function tableResources() {
-//   return {
-//     restrict: 'E',
-//     templateUrl: 'views/directiv/tableResources.html',
-//     link: function($scope, elm, attrs, ctrl) {
 
-//      $scope.$watch('objStockroom.arrSummaYear()', function(newValue, oldValue, scope) {
 
-//       let coefficient = $scope.coefficient;
-//       let arrSummaYear = $scope.objStockroom.arrSummaYear();
 
-//       let table = function () { 
-//         let table=[];
-//         for (var i = 0; i < arrSummaYear.length; i++) {
-//          table.push(new ResourcesOBJcreate(arrSummaYear[i]));
-//        };   
-//        return table;
-//      };     
 
-//      $scope.tableResources = {
-//       coefficient : coefficient,
-//       arrSummaYear : arrSummaYear,
-//       table : table(),
-//       visi : function () {
-//         console.log('705 visi');
-//         if ( this.arrSummaYear.length < 2) {
-//           return true;
-//         } else { return false;}
-//       },
-//     };
 
-//     $scope.CalculateResources = function (valSumma,valRes, coeff) {
-//       if (valSumma == "0" || coeff == "0") { return "-";}
-//       return (valSumma/(2.7*1267*$scope.coefficient)*valRes*coeff).toFixed(2);
-//     }
+angular.module('jobPos').directive('tableResources', ['dataTableResources', function(dataTableResources){
 
-//   },true);
+  return {
+    restrict: 'E',
+    templateUrl: 'views/directiv/tableResources.html',
+    link: function($scope, elm, attrs, ctrl) {
 
-//      function ResourcesOBJcreate (summa) {
-//       let electric;
-//       let oil;
-//       let vapor;
-//       let compresAir;
-//       let waterHouse;
-//       let oxyden;
-//       let coef = function (argument) {
-//         if ($scope.coefficient == 0) {return 1;}
-//       };
-//       let summaPlusCoef = summa / (2.7 * 1267 * coef());
-//       if (summaPlusCoef < 0.750) {
-//         electric = "205";
-//         oil = "97";
-//         vapor = "200";
-//         compresAir = "3.9";
-//         waterHouse = "0.3";
-//         oxyden = "4400";
-//       } else if (0.749 < summaPlusCoef && summaPlusCoef < 1.250) {
-//         electric = "185";
-//         oil = "69";
-//         vapor = "185";
-//         compresAir = "3.2";
-//         waterHouse = "0.23";
-//         oxyden = "4400";
-//       } else if (1.249 < summaPlusCoef && summaPlusCoef < 1.750) {
-//         electric = "140";
-//         oil = "52";
-//         vapor = "160";
-//         compresAir = "3.2";
-//         waterHouse = "0.2";
-//         oxyden = "4400";
-//       } else if (1.749 < summaPlusCoef && summaPlusCoef < 2.250) {
-//         electric = "100";
-//         oil = "44";
-//         vapor = "140";
-//         compresAir = "2.6";
-//         waterHouse = "0.16";
-//         oxyden = "4400";
-//       } else if (2.249 < summaPlusCoef) {
-//         electric = "70";
-//         oil = "40";
-//         vapor = "130";
-//         compresAir = "2.6";
-//         waterHouse = "0.16";
-//         oxyden = "4400";
-//       }
-//       return{
-//         summa : summa,
-//         electric : electric,
-//         oil : oil,
-//         vapor : vapor,
-//         compresAir : compresAir,
-//         waterHouse : waterHouse,
-//         oxyden : oxyden
-//       }
-//     };
+     $scope.tableResources = dataTableResources;
 
-//   }
-// };
-// }
+
+      $scope.$watchGroup(['objStockroom.arrSummaYear', 'coefficient'], function(newValue, oldValue, scope) {
+      console.log('watch tableResources');
+      if ($scope.objStockroom.arrSummaYear[0] == 0 || $scope.coefficient == 0) {return;}
+       dataTableResources.getArrTable($scope.coefficient, $scope.objStockroom.arrSummaYear);
+       dataTableResources.getArrResources($scope.coefficient);
+      });
+
+
+
+
+    }
+  };
+}]);
 
 
 

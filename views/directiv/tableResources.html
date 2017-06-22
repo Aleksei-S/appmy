@@ -4,8 +4,8 @@
 			<td rowspan="2">Наименование ресурсов</td>
 			<td rowspan="2">Един. изм.</td>
 			<td rowspan="2">Коэфф.</td>
-			<td rowspan="2" ng-show="tableResources.visi()">Норма на 1 млн руб. СМР </td>
-			<td colspan="{{tableResources.arrSummaYear.length}}">Потребность на  период строительства</td>
+			<td rowspan="2" ng-show="tableResources.visi">Норма на 1 млн руб. СМР </td>
+			<td colspan="{{tableResources.arrSummaYear.length}}" >Потребность на  период строительства</td>
 		</tr>
 		<tr>
 			<td ng-repeat="td in tableResources.arrSummaYear track by $index">{{arrayYearsColdspan[$index].year}}</td>
@@ -14,7 +14,7 @@
 			<td class="tdLeft">Объем СМР</td>
 			<td >тыс.руб. (BRN)</td>
 			<td >2,7х1267х{{coefficient}}</td>
-			<td ng-show="tableResources.visi()">-</td>
+			<td ng-show="tableResources.visi">-</td>
 			<td ng-repeat="sum in tableResources.arrSummaYear track by $index">{{sum}}</td>
 
 		</tr>
@@ -23,55 +23,55 @@
 			<td class="tdLeft">Электроэнергия</td>
 			<td >ква</td>
 			<td >1,02</td>
-			<td ng-show="tableResources.visi()">{{tableResources.table[0].electric}}</td>
-			<td ng-repeat="td in tableResources.table track by $index">{{CalculateResources(td.summa, td.electric, 1.02)}}
-				<span ng-show="!tableResources.visi()"><br>{{td.electric}}</span></td>
+			<td ng-show="tableResources.visi">{{tableResources.arrSummaYearResources[0].electric}}</td>
+			<td ng-repeat="td in tableResources.objResourcesArr track by $index">{{td.electric}}
+				<span ng-show="!tableResources.visi"><br>{{td.electricCoef}}</span></td>
 		</tr>
 		
 		<tr>
-			<td class="tdLeft"> Топливо</td>
+			<td class="tdLeft">Топливо</td>
 			<td >тн</td>
 			<td >1,02</td>
-			<td ng-show="tableResources.visi()">{{tableResources.table[0].oil}}</td>
-			<td ng-repeat="td in tableResources.table track by $index">{{CalculateResources(td.summa, td.oil, 1.02)}}<span ng-show="!tableResources.visi()"><br>{{td.oil}}</span></td>
+			<td ng-show="tableResources.visi">{{tableResources.arrSummaYearResources[0].oil}}</td>
+			<td ng-repeat="td in tableResources.objResourcesArr track by $index">{{td.oil}}<span ng-show="!tableResources.visi"><br>{{td.oilCoef}}</span></td>
 		</tr>
 
 		<tr>
 			<td class="tdLeft">Пар</td>
 			<td >кг/час</td>
 			<td >1,02</td>
-			<td ng-show="tableResources.visi()">{{tableResources.table[0].vapor}}</td>
-			<td ng-repeat="td in tableResources.table track by $index">{{CalculateResources(td.summa, td.vapor, 1.02)}}<span ng-show="!tableResources.visi()"><br>{{td.vapor}}</span></td>
+			<td ng-show="tableResources.visi">{{tableResources.arrSummaYearResources[0].vapor}}</td>
+			<td ng-repeat="td in tableResources.objResourcesArr track by $index">{{td.vapor}}<span ng-show="!tableResources.visi"><br>{{td.vaporCoef}}</span></td>
 		</tr>
 
 		<tr>
 				<td class="tdLeft">Сжатый воздух</td>
 				<td >шт</td>
 				<td >1,03</td>
-				<td ng-show="tableResources.visi()">{{tableResources.table[0].compresAir}}</td>
-				<td ng-repeat="td in tableResources.table track by $index">{{CalculateResources(td.summa, td.compresAir, 1.02)}}<span ng-show="!tableResources.visi()"><br>{{td.compresAir}}</span></td>
+				<td ng-show="tableResources.visi">{{tableResources.arrSummaYearResources[0].compresAir}}</td>
+				<td ng-repeat="td in tableResources.objResourcesArr track by $index">{{td.compresAir}}<span ng-show="!tableResources.visi"><br>{{td.compresAirCoef}}</span></td>
 			</tr>
 	
 			<tr>
 				<td class="tdLeft">Вода на противопожарные нуж-ды</td>
 				<td >л/сек</td>
 				<td >-</td>
-				<td ng-show="tableResources.visi()">-</td>
-				<td ng-repeat="td in tableResources.table track by $index">{{20}}</td>
+				<td ng-show="tableResources.visi">-</td>
+				<td ng-repeat="td in tableResources.objResourcesArr track by $index">{{20}}</td>
 			</tr>
 			<tr>
 				<td class="tdLeft">Вода на хоз.-питьевые нужды</td>
 				<td >л/сек</td>
 				<td >1,03</td>
-				<td ng-show="tableResources.visi()">{{tableResources.table[0].waterHouse}}</td>
-				<td ng-repeat="td in tableResources.table track by $index">{{CalculateResources(td.summa, td.waterHouse, 1.02)}}<span ng-show="!tableResources.visi()"><br>{{td.waterHouse}}</span></td>
+				<td ng-show="tableResources.visi">{{tableResources.arrSummaYearResources[0].waterHouse}}</td>
+				<td ng-repeat="td in tableResources.objResourcesArr track by $index">{{td.waterHouse}}<span ng-show="!tableResources.visi"><br>{{td.waterHouseCoef}}</span></td>
 			</tr>
 			<tr>
 				<td class="tdLeft">Кислород</td>
 				<td >м3</td>
 				<td >1,03</td>
-				<td ng-show="tableResources.visi()">{{tableResources.table[0].oxyden}}</td>
-				<td ng-repeat="td in tableResources.table track by $index">{{CalculateResources(td.summa, td.oxyden, 1.02)}}<span ng-show="!tableResources.table"><br>{{td.oxyden}}</span></td>
+				<td ng-show="tableResources.visi">{{tableResources.arrSummaYearResources[0].oxyden}}</td>
+				<td ng-repeat="td in tableResources.objResourcesArr track by $index">{{td.oxyden}}<span ng-show="!tableResources.arrSummaYearResources"><br>{{td.oxydenCoef}}</span></td>
 			</tr>
 
 		</table>
