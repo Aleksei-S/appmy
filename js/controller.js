@@ -454,7 +454,7 @@ angular.module('jobPos').directive('tableKalendarnii', ['$compile', function($co
 angular.module('jobPos').directive( 'textTabl', function ($compile) {
   return {
   restrict: 'E',
-  scope: { text: '=', key: '@'},
+  scope: { text: '=', key: '@'},      /////////// prob text: '@'
   template: '<p ng-show="showInput" ng-click="clickOnText()">{{text}}</p><my-input ng-show="!showInput" mytext="text" mykey="{{key}}"></my-dir>',
   replace: false,
   controller: function ( $scope, $element ) {
@@ -476,9 +476,9 @@ angular.module('jobPos').directive('myInput', function($compile){
   return {
   restrict: 'E',
   scope: { mytext: '=', mykey: '@' },
-  template: '<input type="text" check-Num ng-model="mytext" ng-blur="inputBlur(mytext)" ng-keypress="pressKeyboard($event)" class="form-control input-sm">',
+  template: '<input type="text" check-Num ng-change="change(mytext)" ng-model="mytext" ng-blur="inputBlur(mytext)" ng-keypress="pressKeyboard($event)" class="form-control input-sm">',
   replace: true,
-  controller: function ( $scope, $element ) {
+  controller: function ( $scope, $element, $attrs) {
 
    $scope.inputBlur = function (event) {
   $scope.$parent.showInput =true; 
@@ -489,6 +489,54 @@ angular.module('jobPos').directive('myInput', function($compile){
   $scope.inputBlur();
   }
   };
+
+        $scope.change = function (val) {
+console.log($attrs);
+console.log(val);
+console.log($scope);
+
+
+
+          if ($attrs.mykey == "total" || $attrs.mykey == "CMP") {
+            $scope.calculateOther($attrs.mykey);
+          } else if (attrs.key == "name") {
+            return;
+           } else {
+             $scope.calculateRow($scope.$parent.$parent.$parent.$parent.Row, $attrs);
+          //   setTimeout($scope.calculateColumn($scope.$parent.$parent.Row, attrs, val), 10);
+           } 
+        };
+
+
+
+
+
+
+        $scope.calculateOther = function (key) {
+          let other;
+          let totalRow;
+          let result = 0;
+          for (var i = 0; i < $scope.$parent.$parent.table.length; i++){
+            if (($scope.$parent.$parent.table[i].name).indexOf('Прочие работы') !== -1 ) {
+              other = $scope.$parent.$parent.table[i];
+              continue;
+            }
+            if (($scope.$parent.$parent.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
+              totalRow = $scope.$parent.$parent.table[i];
+              continue;
+            }
+
+            let sum = $scope.$parent.$parent.table[i][key].replace('-', "0");
+            result = result + parseFloat(sum);
+          }
+          other[key] = (totalRow[key] - result).toFixed(2);
+        };
+
+
+
+
+
+
   },
   };
 });
@@ -524,44 +572,52 @@ angular.module('jobPos').directive('calculateTable', ['dataTableStockroom','data
       require: '^textTabl',
       link: function($scope, elm, attrs, ctrl) {
 
-        $scope.$watch(attrs.text, function(newValue, oldValue, scope){
-          console.log('watch');
-          if (newValue == oldValue) {return;}
-          $scope.calculate(attrs.key);
-        });
+        // $scope.$watch(attrs.text, function(newValue, oldValue, scope){
+        //   console.log('watch');
+        //   if (newValue == oldValue) {return;}
+        //   $scope.calculate(attrs.key);
+        // });
 
 
-        $scope.calculate = function (val) {
-          if (attrs.key == "total" || attrs.key == "CMP") {
-            $scope.calculateOther(attrs.key);
-          } else if (attrs.key == "name") {
-            return;
-          } else {
-            $scope.calculateRow($scope.$parent.$parent.Row, attrs);
-            setTimeout($scope.calculateColumn($scope.$parent.$parent.Row, attrs, val), 10);
-          } 
-        };
+        // $scope.$watch("table", function(newValue, oldValue, scope){
+        //   console.log('watch');
+        //   if (newValue == oldValue) {return;}
+        //   $scope.calculate(attrs.key);
+        // }, true);
 
 
-        $scope.calculateOther = function (key) {
-          let other;
-          let totalRow;
-          let result = 0;
-          for (var i = 0; i < $scope.$parent.$parent.table.length; i++){
-            if (($scope.$parent.$parent.table[i].name).indexOf('Прочие работы') !== -1 ) {
-              other = $scope.$parent.$parent.table[i];
-              continue;
-            }
-            if (($scope.$parent.$parent.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
-              totalRow = $scope.$parent.$parent.table[i];
-              continue;
-            }
 
-            let sum = $scope.$parent.$parent.table[i][key].replace('-', "0");
-            result = result + parseFloat(sum);
-          }
-          other[key] = (totalRow[key] - result).toFixed(2);
-        };
+        // $scope.calculate = function (val) {
+        //   if (attrs.key == "total" || attrs.key == "CMP") {
+        //     $scope.calculateOther(attrs.key);
+        //   } else if (attrs.key == "name") {
+        //     return;
+        //   } else {
+        //     $scope.calculateRow($scope.$parent.$parent.Row, attrs);
+        //     setTimeout($scope.calculateColumn($scope.$parent.$parent.Row, attrs, val), 10);
+        //   } 
+        // };
+
+
+        // $scope.calculateOther = function (key) {
+        //   let other;
+        //   let totalRow;
+        //   let result = 0;
+        //   for (var i = 0; i < $scope.$parent.$parent.table.length; i++){
+        //     if (($scope.$parent.$parent.table[i].name).indexOf('Прочие работы') !== -1 ) {
+        //       other = $scope.$parent.$parent.table[i];
+        //       continue;
+        //     }
+        //     if (($scope.$parent.$parent.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
+        //       totalRow = $scope.$parent.$parent.table[i];
+        //       continue;
+        //     }
+
+        //     let sum = $scope.$parent.$parent.table[i][key].replace('-', "0");
+        //     result = result + parseFloat(sum);
+        //   }
+        //   other[key] = (totalRow[key] - result).toFixed(2);
+        // };
 
 
         $scope.calculateRow = function (row,attrs) {
@@ -894,71 +950,62 @@ function ResourcesOBJcreate (summa, coefic) {
     };
 
 
-this.getArrTable = function (coefficient, arrSummaYear) {
-   this.arrSummaYearResources = [];
-      for (var i = 0; i < arrSummaYear.length; i++) {
-         this.arrSummaYearResources.push(new ResourcesOBJcreate(arrSummaYear[i], coefficient));
-       };    
-      this.coefficient = coefficient;
-      this.arrSummaYear = arrSummaYear;
-      this.getvisi();
+    this.getArrTable = function (coefficient, arrSummaYear) {
+       this.arrSummaYearResources = [];
+          for (var i = 0; i < arrSummaYear.length; i++) {
+             this.arrSummaYearResources.push(new ResourcesOBJcreate(arrSummaYear[i], coefficient));
+           };    
+          this.coefficient = coefficient;
+          this.arrSummaYear = arrSummaYear;
+          this.getvisi();
     }
     this.getvisi = function () {
-      console.log('705 visi');
-            if ( this.arrSummaYear.length < 2) {
-              this.visi = true;
-            } else { 
-              this.visi = false;
-            }
+          console.log('705 visi');
+                if ( this.arrSummaYear.length < 2) {
+                  this.visi = true;
+                } else { 
+                  this.visi = false;
+                }
     }
 
+    this.arrSummaYearResources = []; 
+    this.coefficient = 0;
+    this.arrSummaYear = [];
+    this.visi = true;
 
-  this.arrSummaYearResources = []; 
-  this.coefficient = 0;
-  this.arrSummaYear = [];
-  this.visi = true;
 
-
-this.getArrResources = function (coefficient) {
-this.objResourcesArr =  [];
-  for (var i = 0; i < this.arrSummaYearResources.length; i++) {
-    function checkval () {
-      
+    this.getArrResources = function (coefficient) {
+      this.objResourcesArr =  [];
+      for (var i = 0; i < this.arrSummaYearResources.length; i++) {
+        let electric = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].electric*1.02).toFixed(2);
+        let oil = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oil*1.02).toFixed(2);
+        let vapor = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].vapor*1.02).toFixed(2);
+        let compresAir = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].compresAir*1.03).toFixed(2);
+        let waterHouse = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].waterHouse*1.03).toFixed(2);
+        let oxyden = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oxyden*1.03).toFixed(2);
+        this.objResourcesArr.push(new this.objResources(electric, oil, vapor, compresAir, waterHouse, oxyden, 
+                                this.arrSummaYearResources[i].electric, this.arrSummaYearResources[i].oil, 
+                                this.arrSummaYearResources[i].vapor, this.arrSummaYearResources[i].compresAir, 
+                                this.arrSummaYearResources[i].waterHouse,  this.arrSummaYearResources[i].oxyden));
+      }
     }
 
+    this.objResourcesArr = [];
 
-    let electric = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].electric*1.02).toFixed(2);
-    let oil = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oil*1.02).toFixed(2);
-    let vapor = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].vapor*1.02).toFixed(2);
-    let compresAir = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].compresAir*1.03).toFixed(2);
-    let waterHouse = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].waterHouse*1.03).toFixed(2);
-    let oxyden = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oxyden*1.03).toFixed(2);
-
-    this.objResourcesArr.push(new this.objResources(electric, oil, vapor, compresAir, waterHouse, oxyden, 
-                            this.arrSummaYearResources[i].electric, this.arrSummaYearResources[i].oil, 
-                            this.arrSummaYearResources[i].vapor, this.arrSummaYearResources[i].compresAir, 
-                            this.arrSummaYearResources[i].waterHouse,  this.arrSummaYearResources[i].oxyden));
-  }
-
-
-}
-
-this.objResourcesArr = [];
-
-this.objResources = function (electric, oil, vapor, compresAir, waterHouse, oxyden, electricCoef, oilCoef, vaporCoef, compresAirCoef, waterHouseCoef, oxydenCoef){
-  this.electric = electric;
-  this.oil = oil;
-  this.vapor = vapor;
-  this.compresAir = compresAir;
-  this.waterHouse = waterHouse;
-  this.oxyden = oxyden;
-  this.electricCoef = electricCoef;
-  this.oilCoef = oilCoef;
-  this.vaporCoef = vaporCoef;
-  this.compresAirCoef = compresAirCoef;
-  this.waterHouseCoef = waterHouseCoef;
-  this.oxydenCoef = oxydenCoef;
-}
+    this.objResources = function (electric, oil, vapor, compresAir, waterHouse, oxyden, electricCoef, oilCoef, vaporCoef, compresAirCoef, waterHouseCoef, oxydenCoef){
+      this.electric = electric;
+      this.oil = oil;
+      this.vapor = vapor;
+      this.compresAir = compresAir;
+      this.waterHouse = waterHouse;
+      this.oxyden = oxyden;
+      this.electricCoef = electricCoef;
+      this.oilCoef = oilCoef;
+      this.vaporCoef = vaporCoef;
+      this.compresAirCoef = compresAirCoef;
+      this.waterHouseCoef = waterHouseCoef;
+      this.oxydenCoef = oxydenCoef;
+    }
 
 
 
@@ -982,7 +1029,7 @@ angular.module('jobPos').directive('tableResources', ['dataTableResources', func
 
       $scope.$watchGroup(['objStockroom.arrSummaYear', 'coefficient'], function(newValue, oldValue, scope) {
       console.log('watch tableResources');
-      if ($scope.objStockroom.arrSummaYear[0] == 0 || $scope.coefficient == 0) {return;}
+      if ($scope.objStockroom.arrSummaYear == undefined || $scope.objStockroom.arrSummaYear[0] == 0 || $scope.coefficient == 0) {return;}
        dataTableResources.getArrTable($scope.coefficient, $scope.objStockroom.arrSummaYear);
        dataTableResources.getArrResources($scope.coefficient);
       });
