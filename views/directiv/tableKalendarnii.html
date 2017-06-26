@@ -37,11 +37,11 @@
 				<td ng-repeat="(key, value) in Row track by $index" ng-class="key=='name' ? 'tdLeft' : 'tdCentr' ">
 
 <span> <!-- ng-class="key=='name'||key=='CMP'||key=='total' ? '' :'underLine'" -->
-					<text-tabl ng-if="!Row[key].hasOwnProperty('first')" calculate-table text="Row[key]" key="{{key}}"></text-tabl>
+					<text-tabl ng-if="!Row[key].hasOwnProperty('first')" dataval="0" text="Row[key]" key="{{key}}"></text-tabl>
 
-					<text-tabl ng-if="Row[key].hasOwnProperty('first')" calculate-table="first" text="Row[key].first" key="{{key}}"></text-tabl>
+					<text-tabl ng-if="Row[key].hasOwnProperty('first')" dataval="first" text="Row[key].first" key="{{key}}"></text-tabl>
 </span>
-					<text-tabl ng-if="Row[key].hasOwnProperty('first')" calculate-table="second" text="Row[key].second" key="{{key}}"></text-tabl>
+					<text-tabl ng-if="Row[key].hasOwnProperty('first')" dataval="second"  text="Row[key].second" key="{{key}}"></text-tabl>
 
 				</td>
 
