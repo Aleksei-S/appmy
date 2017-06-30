@@ -5,9 +5,14 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 //mongoose.connect(config.get("mongoose:uri"));
 
+try {
+	mongoose.connect('mongodb://localhost/test2');
+} catch(e) {
+	// statements
+	console.log(e);
+}
 
-
-mongoose.connect('mongodb://localhost/test2');
+//mongoose.connect('mongodb://localhost/test2');
 var Schema = mongoose.Schema;
 
 

@@ -13,6 +13,19 @@ var STRtable = ["Подготовка территории строительс�
 
 var jobPos = angular.module('jobPos', []);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 ///////////////////// service !!!!!!!!! /////////////////////e
 angular.module('jobPos').service('dataTable', function() {
 
@@ -144,13 +157,17 @@ this.rowTable = function (arr, name="-", total="-", CMP="-", monthArr) {
 
 
 
+
+
+
+
 ///////////////////// controller !!!!!!!!! /////////////////////
 jobPos.controller('PosCtrl', ['$scope','dataTable','$compile', 'dataTableWork', function($scope, dataTable,$compile,dataTableWork){
   $scope.dateBeginBuilding= new Date();
   $scope.timeBuilding = 0;
 
 
-  $scope.$watch('timeBuilding', function(newValue, oldValue, scope) {
+ $scope.changTime = function (val) {
     dataTable.dateBeginBuilding = $scope.dateBeginBuilding;
     dataTable.timeBuilding = $scope.timeBuilding;
     dataTable.getArrayMonthAndYearsColdspan();
@@ -160,19 +177,17 @@ jobPos.controller('PosCtrl', ['$scope','dataTable','$compile', 'dataTableWork', 
     $scope.arrayYearsColdspan = dataTable.arrayYearsColdspan;
     $scope.table = dataTable.table;
     $scope.timeBuildingCeil = dataTable.timeBuildingCeil;
-//dataTable.refreshTable;
-}, );
-
-
+ }
 
 
 ///////////////////// ПРОЦЕНТЫ !!!!!!!!! /////////////////////
 $scope.$watch('timeBuildingCeil', function(newValue, oldValue, scope) {
-  console.log('$watchGroup timeBuildingCeil');
+  console.log('$watchGroup timeBuildingCeil'+$scope.timeBuildingCeil);
+  if ($scope.timeBuildingCeil == undefined) {$scope.timeBuildingCeil = 0;}
   $scope.Percent = new Array($scope.timeBuildingCeil);
-  for (var i = $scope.Percent.length - 1; i >= 0; i--) {
-    $scope.Percent[i] = "-";
-  }
+    for (var i = 0; i < $scope.Percent.length; i++) {
+      $scope.Percent[i] = "-";
+    }
 });
 
 $scope.$watch('Percent', function(newValue, oldValue, scope) {
@@ -204,6 +219,7 @@ $scope.calcPercentTable = function () {
   } 
 }
 ///////////////////// ПРОЦЕНТЫ !!!!!!!!! /////////////////////
+
 
 /////////////////////ВЫДЕЛЕНИЕ СТРОЧКИ!!!!!!!!!!!!!!/////////////////////
 var RowKalendarniiIndex = "";
@@ -403,7 +419,8 @@ console.log(timeBeginJson);
  $scope.arrayYearsColdspan = dataTable.arrayYearsColdspan;
  $scope.table = dataTable.table;
  $scope.timeBuildingCeil = dataTable.timeBuildingCeil;
-
+ $scope.workCapacity = dataTable.workCapacity;
+  $scope.coefficient = dataTable.coefficient;
   // $scope.$watch('timeBuilding', function(newValue, oldValue, scope) {
   //   dataTable.dateBeginBuilding = $scope.dateBeginBuilding;
   //   dataTable.timeBuilding = $scope.timeBuilding;
@@ -453,8 +470,23 @@ $scope.saveCookie = function (){
 
 
   setCookie("table",angular.toJson($scope.table), 1200);
-    setCookie("dateBeginBuilding",angular.toJson($scope.dateBeginBuilding), 1200);
-    setCookie("timeBuilding",angular.toJson($scope.timeBuilding), 1200);
+  setCookie("dateBeginBuilding",angular.toJson($scope.dateBeginBuilding), 1200);
+  setCookie("timeBuilding",angular.toJson($scope.timeBuilding), 1200);
+  setCookie("workCapacity",angular.toJson($scope.workCapacity), 1200);
+  setCookie("coefficient",angular.toJson($scope.coefficient), 1200); 
+   
+
+
+
+//'objStockroom.arrSummaYear', 'coefficient'
+
+
+
+
+
+
+
+
 console.log(angular.toJson($scope.table));
 // // $scope.$watch('timeBuilding', function(newValue, oldValue, scope) {
 //     dataTable.dateBeginBuilding = $scope.dateBeginBuilding;
@@ -730,8 +762,6 @@ function checkRowCalculate (row, arr) {
 }
 /////////////////
 
-
-
 },
 };
 }]);
@@ -805,45 +835,9 @@ angular.module('jobPos').directive('myInputval', function($compile){
         }
       };
 
-      // $scope.change = function (val) {
-      // }
 },
 };
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-angular.module('jobPos').directive('calculateTable', ['dataTableStockroom','dataTable', function(dataTableStockroom, dataTable){
-  return {
-    require: '^textTabl',
-    link: function($scope, elm, attrs, ctrl) {
-
-
-
-
-
-
-
-    }
-  };
-}]);
-// }
-
 
 
 angular.module('jobPos').directive('checkNum', checkNum);
@@ -1163,10 +1157,6 @@ angular.module('jobPos').service('dataTableResources', function(){
     this.waterHouseCoef = waterHouseCoef;
     this.oxydenCoef = oxydenCoef;
   }
-
-
-
-
 });
 
 
@@ -1183,17 +1173,12 @@ angular.module('jobPos').directive('tableResources', ['dataTableResources', func
 
       $scope.tableResources = dataTableResources;
 
-
       $scope.$watchGroup(['objStockroom.arrSummaYear', 'coefficient'], function(newValue, oldValue, scope) {
         console.log('watch tableResources');
         if ($scope.objStockroom.arrSummaYear == undefined || $scope.objStockroom.arrSummaYear[0] == 0 || $scope.coefficient == 0) {return;}
         dataTableResources.getArrTable($scope.coefficient, $scope.objStockroom.arrSummaYear);
         dataTableResources.getArrResources($scope.coefficient);
       });
-
-
-
-
     }
   };
 }]);

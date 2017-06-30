@@ -3,9 +3,7 @@ var bodyParser = require('body-parser')
 var path = require('path');
 
 
-var POS = require('../js/db/db').POS;
 
-var table = [];
 
 
 
@@ -34,6 +32,18 @@ app.get('/', function(req, res){
 
 
 
+
+//var POS = require('../js/db/db').POS;
+
+var table = [];
+
+
+try {
+	var POS = require('../js/db/db').POS;
+} catch(e) {
+	// statements
+	console.log(e);
+}
 
 
 app.post('/save', function(req, res){
