@@ -17,13 +17,28 @@ var Schema = mongoose.Schema;
 
 
 var schema = new Schema({
-	table:[],
+	namePOS: "",
+	table: [],
+	timeBuilding: "",
+    Percent: [],
+ 	dateBeginBuilding: "",
+ 	workCapacity: "",
 	created:{
 		type:Date,
 		default:Date.now
 	}
 });
 
+
+
+
+
+// 'namePOS':angular.toJson($scope.namePOS),
+// 'table':angular.toJson($scope.table),
+// 'dateBeginBuilding':angular.toJson($scope.dateBeginBuilding),
+// 'Percent':angular.toJson($scope.Percent),
+// 'workCapacity':angular.toJson($scope.workCapacity),
+// 'coefficient':angular.toJson($scope.coefficient)
 
 // var POS = mongoose.model('POS', schema);
 

@@ -1,5 +1,5 @@
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var path = require('path');
 
 
@@ -29,29 +29,88 @@ app.get('/', function(req, res){
 });
 
 
+///////mymymy
+
+var namePOSJ= "";
+var	tableJ= [];
+var	timeBuildingJ= "";
+var	dateBeginBuildingJ= "";
+var PercentJ= [];
+var workCapacityJ= "";
+var coefficientJ= "";
+///////mymymy
+
+
+app.post('/ee', function(req, res){
+
+	var pos = new POS({
+		namePOS: req.body.namePOS,
+		timeBuilding: req.body.timeBuilding,
+		dateBeginBuilding: req.body.dateBeginBuilding,
+		table: req.body.table,
+		Percent: req.body.Percent,		
+		workCapacity: req.body.workCapacity,
+		coefficient: req.body.coefficient,
+	});
+
+
+namePOSJ = req.body.namePOS;
+dateBeginBuildingJ = req.body.dateBeginBuilding;
+timeBuildingJ = req.body.timeBuilding;
+tableJ = req.body.table;
+PercentJ = req.body.Percent;
+workCapacityJ = req.body.workCapacity;
+coefficientJ = req.body.coefficient;
+
+
+
+	// res.send(req.body);
+//res.send(path.dirname(__dirname) + '/views/index.html');
+});
+
+
+
+app.post('/obn', function(req, res){
+
+let data = {
+	namePOS: namePOSJ,
+	dateBeginBuilding: dateBeginBuildingJ,
+	timeBuilding: timeBuildingJ,
+	table: tableJ,
+	Percent: PercentJ,		
+	workCapacity: workCapacityJ,
+	coefficient: coefficientJ,
+};
+
+res.send(data);
+});
 
 
 
 
 var POS = require('../js/db/db').POS;
 
-var table = [];
 
 
 
-
-
+////////////////save//////////////////////////
 app.post('/save', function(req, res){
-	// console.log(req.body);
-	// res.send(req.body);
+
 	var pos = new POS({
-		table: req.body
+		namePOS: req.body.namePOS,
+		timeBuilding: req.body.timeBuilding,
+		dateBeginBuilding: req.body.dateBeginBuilding,
+		table: req.body.table,
+		Percent: req.body.Percent,		
+		workCapacity: req.body.workCapacity,
+		coefficient: req.body.coefficient,
 	});
+
 	pos.save(function (err) {
 		if (err) {
 			console.log(err);
 		} else {
-			res.send("ok");
+			res.send("pos save! ok!");
 
 		}
 	});
@@ -70,13 +129,6 @@ app.post('/load', function(req, res){
 		}
 	});   
 });
-
-
-
-
-
-
-
 
 
 

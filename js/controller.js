@@ -21,7 +21,7 @@ var jobPos = angular.module('jobPos', []);
 angular.module('jobPos').service('dataTable', function() {
 
 
-this.getArrSummaYear = function (row) {
+  this.getArrSummaYear = function (row) {
     console.log("tableStockroom");
 
 
@@ -70,108 +70,104 @@ this.getArrSummaYear = function (row) {
       "Nov" : "ноябрь",
       "Dec" : "декабрь"
     };
-this.arrayMonth = []; //ОЧИСТИТЬ
-this.arrayYearsColdspan = []; //ОЧИСТИТЬ
-this.table = []; //ОЧИСТИТЬ !!!!!!!!!!!!!!!!!NONONONO
-let timeMonth = new Date(this.dateBeginBuilding.getFullYear(), this.dateBeginBuilding.getMonth(), 1, 0, 0, 0, 0);
-let num = this.dateBeginBuilding.getMonth();
-let Year = this.dateBeginBuilding.getFullYear();
-let countColdspan = 0;
-let Obj = function (year, coldspan) {
-  this.year = year;
-  this.coldspan = coldspan;
-};
+  this.arrayMonth = []; //ОЧИСТИТЬ
+  this.arrayYearsColdspan = []; //ОЧИСТИТЬ
+  this.table = []; //ОЧИСТИТЬ !!!!!!!!!!!!!!!!!NONONONO
+  let timeMonth = new Date(this.dateBeginBuilding.getFullYear(), this.dateBeginBuilding.getMonth(), 1, 0, 0, 0, 0);
+  let num = this.dateBeginBuilding.getMonth();
+  let Year = this.dateBeginBuilding.getFullYear();
+  let countColdspan = 0;
+  let Obj = function (year, coldspan) {
+    this.year = year;
+    this.coldspan = coldspan;
+  };
 
-for (var i = 0; i < parseInt(Math.ceil(this.timeBuilding)); i++) {
+  for (var i = 0; i < parseInt(Math.ceil(this.timeBuilding)); i++) {
 
-  if(num == 13) {
-    num = 1;
+    if(num == 13) {
+      num = 1;
+    }
+
+    timeMonth.setMonth(num++);
+    this.arrayMonth.push(mapMonth[timeMonth.toString().substring(4,7)]);
+    let yearNext = timeMonth.toString().substring(11,15);
+
+    if (Year == yearNext) {
+      countColdspan++;
+    }else{ 
+      this.arrayYearsColdspan.push(new Obj(Year,countColdspan));
+      Year = yearNext; 
+      countColdspan = 1;
+    }
   }
 
-  timeMonth.setMonth(num++);
-  this.arrayMonth.push(mapMonth[timeMonth.toString().substring(4,7)]);
-  let yearNext = timeMonth.toString().substring(11,15);
-
-  if (Year == yearNext) {
-    countColdspan++;
-  }else{ 
-    this.arrayYearsColdspan.push(new Obj(Year,countColdspan));
-    Year = yearNext; 
-    countColdspan = 1;
-  }
-}
-
-this.arrayYearsColdspan.push(new Obj(Year,countColdspan));
+  this.arrayYearsColdspan.push(new Obj(Year,countColdspan));
 };
 
 this.arrayYearsColdspan = [];
 this.arrayMonth = [];
-this.dateBeginBuilding = new Date(); //дата начала строительства
-this.timeBuilding = 0;
-this.timeBuildingCeil = 0;
-this.getTimeBuildingCeil = function () {
-  console.log('timeBuildingCeil');
-  this.timeBuildingCeil = parseInt(Math.ceil(this.timeBuilding));
-};
+  this.dateBeginBuilding = new Date(); //дата начала строительства
+  this.timeBuilding = 0;
+  this.timeBuildingCeil = 0;
+  this.getTimeBuildingCeil = function () {
+    console.log('timeBuildingCeil');
+    this.timeBuildingCeil = parseInt(Math.ceil(this.timeBuilding));
+  };
 
+  this.table = [];
 
+  this.getTable = function (table, copytable) {
+    this.table = []; 
+    if (copytable == true && table !== undefined) {
 
-this.table = [];
+      for (var i = 0; i < table.length; i++) {
+        let arr = [];
+        let monthArr = [];
+        for (var key in table[i]) {
+          if (key == "name" || key == "total" || key == "CMP") {continue;}
+          monthArr.push(key);
+          arr.push(table[i][key]);
+        } 
+        if (arr.length == 0) {
 
-this.getTable = function (table, copytable) {
-  this.table = []; 
-  if (copytable == true && table !== undefined) {
+          this.table.push(new this.rowTable(this.arrayMonth, table[i].name, table[i].total, table[i].CMP)); 
+        } else {
+          this.table.push(new this.rowTable(arr, table[i].name, table[i].total, table[i].CMP, monthArr)); 
+        }
 
-    for (var i = 0; i < table.length; i++) {
-      let arr = [];
-      let monthArr = [];
-      for (var key in table[i]) {
-        if (key == "name" || key == "total" || key == "CMP") {continue;}
-        monthArr.push(key);
-        arr.push(table[i][key]);
-      } 
-      if (arr.length == 0) {
-
-        this.table.push(new this.rowTable(this.arrayMonth, table[i].name, table[i].total, table[i].CMP)); 
-      } else {
-        this.table.push(new this.rowTable(arr, table[i].name, table[i].total, table[i].CMP, monthArr)); 
       }
-
+      return;
     }
-    return;
-  }
-  if (table !== undefined) {
-    for (var i = 0; i < table.length; i++) {
-      this.table.push(new this.rowTable(this.arrayMonth, table[i].name, table[i].total, table[i].CMP)); 
-    }
-  } else {
-    for (var i = 0; i < STRtable.length; i++) {
-      this.table.push(new this.rowTable(this.arrayMonth, STRtable[i]));
-    }
-  }
-
-};
-
-
-
-this.rowTable = function (arr, name="-", total="-", CMP="-", monthArr) {
-  this.name = name;
-  this.total = total;
-  this.CMP = CMP;
-  for (var i = 0; i < arr.length; i++) {
-    if (typeof(arr[i])=="object") {
-      this[monthArr[i]] = {
-        first : arr[i].first,
-        second : arr[i].second
-      };
+    if (table !== undefined) {
+      for (var i = 0; i < table.length; i++) {
+        this.table.push(new this.rowTable(this.arrayMonth, table[i].name, table[i].total, table[i].CMP)); 
+      }
     } else {
-      this[arr[i]+i] = {
-        first : "-",
-        second : "-"
-      };
+      for (var i = 0; i < STRtable.length; i++) {
+        this.table.push(new this.rowTable(this.arrayMonth, STRtable[i]));
+      }
     }
-  } 
-};
+
+  };
+
+  this.rowTable = function (arr, name="-", total="-", CMP="-", monthArr) {
+    this.name = name;
+    this.total = total;
+    this.CMP = CMP;
+    for (var i = 0; i < arr.length; i++) {
+      if (typeof(arr[i])=="object") {
+        this[monthArr[i]] = {
+          first : arr[i].first,
+          second : arr[i].second
+        };
+      } else {
+        this[arr[i]+i] = {
+          first : "-",
+          second : "-"
+        };
+      }
+    } 
+  };
 
 });
 
@@ -181,18 +177,19 @@ this.rowTable = function (arr, name="-", total="-", CMP="-", monthArr) {
 
 
 
-
-
-
-
 ///////////////////// controller !!!!!!!!! /////////////////////
-jobPos.controller('PosCtrl', ['$scope','dataTable','$compile', 'dataTableWork', function($scope, dataTable,$compile,dataTableWork){
-    $scope.namePOS= "";
+jobPos.controller('PosCtrl', ['$scope','dataTable','$compile','$http', 'dataTableWork', function($scope, dataTable,$compile,$http,dataTableWork){
+
+
+
+
+
+  $scope.namePOS= "";
   $scope.dateBeginBuilding= new Date();
   $scope.timeBuilding = 0;
-$scope.Percent = [];
+  $scope.Percent = [];
 
- $scope.changTime = function (val) {
+  $scope.changTime = function (val) {
     dataTable.dateBeginBuilding = $scope.dateBeginBuilding;
     dataTable.timeBuilding = $scope.timeBuilding;
     dataTable.getArrayMonthAndYearsColdspan();
@@ -205,43 +202,43 @@ $scope.Percent = [];
 
 
     if ($scope.timeBuildingCeil == undefined) {$scope.timeBuildingCeil = 0;}
-       $scope.Percent = new Array($scope.timeBuildingCeil);
+    $scope.Percent = new Array($scope.timeBuildingCeil);
     for (var i = 0; i < $scope.Percent.length; i++) {
       $scope.Percent[i] = "-";
     }
 
 
- }
-
-$scope.$watch('Percent', function(newValue, oldValue, scope) {
-  console.log('Percent');
-  $scope.SummaPercent = 0;
-  for (var i = $scope.Percent.length - 1; i >= 0; i--) {
-    let a = $scope.Percent[i].replace('-', "0");
-    $scope.SummaPercent = $scope.SummaPercent + parseFloat(a);
   }
-},true);
 
-$scope.calcPercentTable = function () {
-  if ($scope.timeBuildingCeil == 0) {return;}
-  if ($scope.SummaPercent != "100") {return;}
+  $scope.$watch('Percent', function(newValue, oldValue, scope) {
+    console.log('Percent');
+    $scope.SummaPercent = 0;
+    for (var i = $scope.Percent.length - 1; i >= 0; i--) {
+      let a = $scope.Percent[i].replace('-', "0");
+      $scope.SummaPercent = $scope.SummaPercent + parseFloat(a);
+    }
+  },true);
 
-  for (var i = 0; i < $scope.table.length; i++) {
-    for (var n = rowCalculatePercent.length - 1; n >= 0; n--) {
-      if ($scope.table[i].name.indexOf(rowCalculatePercent[n]) !== -1) {
-        let m = 0;
-        for (var key in $scope.table[i]) {
+  $scope.calcPercentTable = function () {
+    if ($scope.timeBuildingCeil == 0) {return;}
+    if ($scope.SummaPercent != "100") {return;}
 
-          if (key == "name" || key == "total" || key == "CMP") {continue;}
-          $scope.table[i][key].first = ($scope.table[i].total * $scope.Percent[m]*0.01).toFixed(2);
-          $scope.table[i][key].second = ($scope.table[i].CMP * $scope.Percent[m]*0.01).toFixed(2);
-          m++;
+    for (var i = 0; i < $scope.table.length; i++) {
+      for (var n = rowCalculatePercent.length - 1; n >= 0; n--) {
+        if ($scope.table[i].name.indexOf(rowCalculatePercent[n]) !== -1) {
+          let m = 0;
+          for (var key in $scope.table[i]) {
+
+            if (key == "name" || key == "total" || key == "CMP") {continue;}
+            $scope.table[i][key].first = ($scope.table[i].total * $scope.Percent[m]*0.01).toFixed(2);
+            $scope.table[i][key].second = ($scope.table[i].CMP * $scope.Percent[m]*0.01).toFixed(2);
+            m++;
+          }
         }
       }
-    }
-  } 
-  dataTable.getArrSummaYear($scope.table[$scope.table.length-1]);
-}
+    } 
+    dataTable.getArrSummaYear($scope.table[$scope.table.length-1]);
+  }
 ///////////////////// ПРОЦЕНТЫ !!!!!!!!! /////////////////////
 
 
@@ -316,136 +313,227 @@ $scope.clickRowKalendarnii = function (currentTarget){
 
 
 
-
-
-
-
-
 $scope.savePos = function () {
-  var b = 1;
-  var c = 6;
-  var a = c || b;
-  console.log(a);
-  console.log(dataTable.table);
 
-  console.log($scope.arrayYearsColdspan);
-// console.log($scope.dateBeginBuilding);
-// console.log(dataTable.dateBeginBuilding);
-// console.log(dataTable.timeBuilding($scope.timeBuilding));
-}
+  var objectToSerialize={
+    'namePOS':angular.toJson($scope.namePOS),
+    'table':angular.toJson($scope.table),
+    'timeBuilding':angular.toJson($scope.timeBuilding),
+    'dateBeginBuilding':angular.toJson($scope.dateBeginBuilding),
+    'Percent':angular.toJson($scope.Percent),
+    'workCapacity':angular.toJson($scope.workCapacity),
+    'coefficient':angular.toJson($scope.coefficient)
+  };
 
-
-
-////////////CCCOOOOOKIIIIE//////////////////////////
-// возвращает cookie с именем name, если есть, если нет, то undefined
-function getCookie(name) {
-  var matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-  return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
-function setCookie(name, value, options) {
-  options = options || {};
-
-  var expires = options.expires;
-
-  if (typeof expires == "number" && expires) {
-    var d = new Date();
-    d.setTime(d.getTime() + expires * 1000);
-    expires = options.expires = d;
-  }
-  if (expires && expires.toUTCString) {
-    options.expires = expires.toUTCString();
-  }
-
-  value = encodeURIComponent(value);
-
-  var updatedCookie = name + "=" + value;
-
-  for (var propName in options) {
-    updatedCookie += "; " + propName;
-    var propValue = options[propName];
-    if (propValue !== true) {
-      updatedCookie += "=" + propValue;
+  $http({
+    method: 'POST',
+    url: '/save',
+    data: objectToSerialize,
+    headers: {
+      'Content-Type': 'application/json'
     }
-  }
-  document.cookie = updatedCookie;
+  }).then(function successCallback(response) {
+     console.log("norm");
+  }, function errorCallback(response) {
+
+  });
+
+
+};
+
+
+
+$scope.loadPos = function (){
+  $http({
+    method: 'POST',
+    url: '/load',
+    data: "",
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(function successCallback(response) {
+    console.log(response);
+    // let data = angular.fromJson(response.data);
+    // let name = angular.fromJson(data.name);
+    // let dateBeginBuilding = angular.fromJson(data.dateBeginBuilding);
+    // let timeBuilding = angular.fromJson(data.timeBuilding);
+    // let table = angular.fromJson(data.table);
+    // let Percent = angular.fromJson(data.Percent);
+    // let workCapacity = angular.fromJson(data.workCapacity);
+    // let coefficient = angular.fromJson(data.coefficient);
+    // getPoS(name, dateBeginBuilding, timeBuilding, table, Percent, workCapacity, coefficient);
+  }, function errorCallback(response) {
+
+  });
+};
+
+
+
+$scope.arrPos = [];
+
+
+
+
+// $scope.loadPos = function (){
+//   $http({
+//     method: 'POST',
+//     url: '/load',
+//     data: "",
+//     headers: {
+//       'Content-Type': 'application/json'
+//     }
+//   }).then(function successCallback(response) {
+//     console.log(response);
+//     let data = angular.fromJson(response.data);
+//     let name = angular.fromJson(data.name);
+//     let dateBeginBuilding = angular.fromJson(data.dateBeginBuilding);
+//     let timeBuilding = angular.fromJson(data.timeBuilding);
+//     let table = angular.fromJson(data.table);
+//     let Percent = angular.fromJson(data.Percent);
+//     let workCapacity = angular.fromJson(data.workCapacity);
+//     let coefficient = angular.fromJson(data.coefficient);
+//     getPoS(name, dateBeginBuilding, timeBuilding, table, Percent, workCapacity, coefficient);
+//   }, function errorCallback(response) {
+
+//   });
+// };
+
+
+
+function getPoS(name, dateBeginBuilding, timeBuilding, table, Percent, workCapacity, coefficient) {
+  $scope.namePOS= name;
+  $scope.dateBeginBuilding = new Date(dateBeginBuilding);
+  $scope.timeBuilding = timeBuilding;
+  dataTable.dateBeginBuilding = $scope.dateBeginBuilding;
+  dataTable.timeBuilding = $scope.timeBuilding;
+  dataTable.getArrayMonthAndYearsColdspan();
+  dataTable.getTable(table, true);
+  dataTable.getTimeBuildingCeil();
+  $scope.arrayMonth = dataTable.arrayMonth;
+  $scope.arrayYearsColdspan = dataTable.arrayYearsColdspan;
+  $scope.table = dataTable.table;
+  $scope.timeBuildingCeil = dataTable.timeBuildingCeil;
+  $scope.Percent = Percent;
+  $scope.workCapacity = workCapacity;
+  $scope.coefficient = coefficient;
+  dataTable.getArrSummaYear($scope.table[$scope.table.length-1]);
 }
 
-function deleteCookie(name) {
-  setCookie(name, "", {
-expires: -1 ////////expires: 3600
-})
-}
-
-// document.cookie = "arrRow=" + angular.toJson($scope.arrRow)
-// + "; path=/; expires=" + (new Date(Date.now() + 7 * 86400).toGMTString());
-// console.log( document.cookie );
 
 
 
 
-$scope.delCookie = function (){
-  deleteCookie("namePOS");
-  deleteCookie("table");
-  deleteCookie("dateBeginBuilding");
-  deleteCookie("timeBuilding");
-  deleteCookie("Percent");
-  deleteCookie("workCapacity");
-  deleteCookie("coefficient");
+// ////////////CCCOOOOOKIIIIE//////////////////////////
+// // возвращает cookie с именем name, если есть, если нет, то undefined
+// function getCookie(name) {
+//   var matches = document.cookie.match(new RegExp(
+//     "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+//     ));
+//   return matches ? decodeURIComponent(matches[1]) : undefined;
+// }
 
-};
+// function setCookie(name, value, options) {
+//   options = options || {};
+
+//   var expires = options.expires;
+
+//   if (typeof expires == "number" && expires) {
+//     var d = new Date();
+//     d.setTime(d.getTime() + expires * 1000);
+//     expires = options.expires = d;
+//   }
+//   if (expires && expires.toUTCString) {
+//     options.expires = expires.toUTCString();
+//   }
+
+//   value = encodeURIComponent(value);
+
+//   var updatedCookie = name + "=" + value;
+
+//   for (var propName in options) {
+//     updatedCookie += "; " + propName;
+//     var propValue = options[propName];
+//     if (propValue !== true) {
+//       updatedCookie += "=" + propValue;
+//     }
+//   }
+//   document.cookie = updatedCookie;
+// }
+
+// function deleteCookie(name) {
+//   setCookie(name, "", {
+// expires: -1 ////////expires: 3600
+// })
+// }
+
+// // document.cookie = "arrRow=" + angular.toJson($scope.arrRow)
+// // + "; path=/; expires=" + (new Date(Date.now() + 7 * 86400).toGMTString());
+// // console.log( document.cookie );
 
 
 
-$scope.setCookie = function (){
 
-let tabl=angular.fromJson(getCookie("table"));
-//$scope.table=dataTable.table;
-console.log(tabl);
+// $scope.delCookie = function (){
+//   deleteCookie("namePOS");
+//   deleteCookie("table");
+//   deleteCookie("dateBeginBuilding");
+//   deleteCookie("timeBuilding");
+//   deleteCookie("Percent");
+//   deleteCookie("workCapacity");
+//   deleteCookie("coefficient");
 
- let time = angular.fromJson(getCookie("timeBuilding"));
-
- console.log(time);
-
- let timeBeginJson = angular.fromJson(getCookie("dateBeginBuilding"));
-
-console.log(timeBeginJson);
-
-let Percent = angular.fromJson(getCookie("Percent"));
- 
-
- $scope.namePOS= angular.fromJson(getCookie("namePOS"));;
- $scope.dateBeginBuilding = new Date(timeBeginJson);
- $scope.timeBuilding = time;
- dataTable.dateBeginBuilding = $scope.dateBeginBuilding;
- dataTable.timeBuilding = $scope.timeBuilding;
- dataTable.getArrayMonthAndYearsColdspan();
- dataTable.getTable(tabl, true);
- dataTable.getTimeBuildingCeil();
- $scope.arrayMonth = dataTable.arrayMonth;
- $scope.arrayYearsColdspan = dataTable.arrayYearsColdspan;
- $scope.table = dataTable.table;
- $scope.timeBuildingCeil = dataTable.timeBuildingCeil;
- $scope.Percent = Percent;
-$scope.workCapacity = angular.fromJson(getCookie("workCapacity"));
- dataTable.getArrSummaYear($scope.table[$scope.table.length-1]);
-$scope.coefficient = angular.fromJson(getCookie("coefficient"));
+// };
 
 
-};
 
-$scope.saveCookie = function (){
-  setCookie("namePOS",angular.toJson($scope.namePOS), 1200);
-  setCookie("table",angular.toJson($scope.table), 1200);
-  setCookie("dateBeginBuilding",angular.toJson($scope.dateBeginBuilding), 1200);
-  setCookie("timeBuilding",angular.toJson($scope.timeBuilding), 1200);
-  setCookie("Percent",angular.toJson($scope.Percent), 1200); 
-  setCookie("workCapacity",angular.toJson($scope.workCapacity), 1200);
-  setCookie("coefficient",angular.toJson($scope.coefficient), 1200); 
-  console.log(angular.toJson($scope.table));
-};
+// $scope.setCookie = function (){
+
+//   let tabl=angular.fromJson(getCookie("table"));
+// //$scope.table=dataTable.table;
+// console.log(tabl);
+
+// let time = angular.fromJson(getCookie("timeBuilding"));
+
+// console.log(time);
+
+// let timeBeginJson = angular.fromJson(getCookie("dateBeginBuilding"));
+
+// console.log(timeBeginJson);
+
+// let Percent = angular.fromJson(getCookie("Percent"));
+
+
+// $scope.namePOS= angular.fromJson(getCookie("namePOS"));;
+// $scope.dateBeginBuilding = new Date(timeBeginJson);
+// $scope.timeBuilding = time;
+// dataTable.dateBeginBuilding = $scope.dateBeginBuilding;
+// dataTable.timeBuilding = $scope.timeBuilding;
+// dataTable.getArrayMonthAndYearsColdspan();
+// dataTable.getTable(tabl, true);
+// dataTable.getTimeBuildingCeil();
+// $scope.arrayMonth = dataTable.arrayMonth;
+// $scope.arrayYearsColdspan = dataTable.arrayYearsColdspan;
+// $scope.table = dataTable.table;
+// $scope.timeBuildingCeil = dataTable.timeBuildingCeil;
+// $scope.Percent = Percent;
+// $scope.workCapacity = angular.fromJson(getCookie("workCapacity"));
+// dataTable.getArrSummaYear($scope.table[$scope.table.length-1]);
+// $scope.coefficient = angular.fromJson(getCookie("coefficient"));
+
+
+// };
+
+// $scope.saveCookie = function (){
+//   setCookie("namePOS",angular.toJson($scope.namePOS), 1200);
+//   console.log($scope.table);
+//   setCookie("table",angular.toJson($scope.table), 1200);
+//   setCookie("dateBeginBuilding",angular.toJson($scope.dateBeginBuilding), 1200);
+//   setCookie("timeBuilding",angular.toJson($scope.timeBuilding), 1200);
+//   setCookie("Percent",angular.toJson($scope.Percent), 1200); 
+//   setCookie("workCapacity",angular.toJson($scope.workCapacity), 1200);
+//   setCookie("coefficient",angular.toJson($scope.coefficient), 1200); 
+//   console.log(angular.toJson($scope.table));
+// };
 
 
 
@@ -485,7 +573,6 @@ controller: function ( $scope, $element, $attrs) {
       var elem = $element[0].firstChild.nextSibling;
       elem.focus();
     },100);
-
   };
 
 },
@@ -501,6 +588,12 @@ angular.module('jobPos').directive('myInput', ['dataTable', function(dataTable){
     controller: function ( $scope, $element, $attrs) {
 
       $scope.inputBlur = function (event) {
+        //VSEGOOO
+        if ($scope.$parent.$parent.$parent.$parent.Row == $scope.$parent.$parent.$parent.$parent.table[$scope.$parent.$parent.$parent.$parent.table.length-1]) {
+          console.log('vsego');
+          dataTable.getArrSummaYear($scope.$parent.$parent.$parent.$parent.Row);
+        }
+        //VSEGOOO
         $scope.$parent.showInput =true; 
       };
 
@@ -511,102 +604,100 @@ angular.module('jobPos').directive('myInput', ['dataTable', function(dataTable){
       };
 
       $scope.change = function (val) {
+        if ($attrs.mykey == "total" || $attrs.mykey == "CMP") {
+          $scope.calculateOther($scope.$parent.$parent.$parent.$parent.Row, $attrs.mykey, val);
+        //} else if ($attrs.key == "name" || $attrs.key == undefined) {
+        } else if ($attrs.key == "name" ) {
+          return;
+        } else {
+
+         $scope.calculateColumn($scope.$parent.$parent.$parent.$parent.Row, $attrs.dataval, $attrs.mykey, val);
+         $scope.calculateRow($scope.$parent.$parent.$parent.$parent.Row, $attrs, val );
+       } 
+
+     };
 
 
+     $scope.calculateOther = function (Row, key, val) {
+      let other;
+      let total;
+      let result = 0;
+      let scope = $scope.$parent.$parent.$parent.$parent;
 
-
-if ($attrs.mykey == "total" || $attrs.mykey == "CMP") {
-  $scope.calculateOther($scope.$parent.$parent.$parent.$parent.Row, $attrs.mykey, val);
-} else if ($attrs.key == "name") {
-  return;
-} else {
-
- $scope.calculateColumn($scope.$parent.$parent.$parent.$parent.Row, $attrs.dataval, $attrs.mykey, val);
- $scope.calculateRow($scope.$parent.$parent.$parent.$parent.Row, $attrs, val );
-} 
-};
-
-
-$scope.calculateOther = function (Row, key, val) {
-  let other;
-  let total;
-  let result = 0;
-  let scope = $scope.$parent.$parent.$parent.$parent;
-
-  for (var i = 0; i < scope.table.length; i++){
-    if ((scope.table[i].name).indexOf('Прочие работы') !== -1 ) {
-      if (scope.table[i] == Row) {
-        return;
+      for (var i = 0; i < scope.table.length; i++){
+        if ((scope.table[i].name).indexOf('Прочие работы') !== -1 ) {
+          if (scope.table[i] == Row) {
+            return;
+          }
+          other = scope.table[i];
+          continue;
+        }
+        if ((scope.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
+          if (scope.table[i] == Row) {
+            total = val;
+          } else {
+            total = scope.table[i][key].replace('-', "0");
+          }
+          continue;
+        }
+        let sum = scope.table[i][key].replace('-', "0");
+        if (scope.table[i] == Row ) {
+          sum = val.replace('-', "0");
+        } 
+        result = result + parseFloat(sum);
       }
-      other = scope.table[i];
-      continue;
-    }
-    if ((scope.table[i].name).indexOf('В С Е Г О:') !== -1 ) {
-      if (scope.table[i] == Row) {
-        total = val;
+      other[key] = (total - result).toFixed(2);
+    };
+
+
+    $scope.calculateRow = function (row,attrs,val) {
+
+
+      if (!checkRowCalculate(row, rowCalculatePercent) || this.$parent.$parent.$parent.$last == true) {return;}
+      let lastKey = Object.keys(row)[Object.keys(row).length - 1];
+      let result = 0;
+      for (var key in row){
+        if (key == "name" || key == "total" || key == "CMP" || key == lastKey) {continue;}
+
+        if (row[key]==row[attrs.mykey]) {
+          result = result + parseFloat(val.replace("-","0"));
+          continue;
+        }
+
+        if (attrs.dataval == "first") {
+          result = result + parseFloat((row[key].first).replace("-","0"));
+        } else {
+          result = result + parseFloat((row[key].second).replace("-","0"));
+        }
+      }
+
+      if (attrs.dataval == "first") {
+        row[lastKey].first = (row.total.replace("-","0") - result).toFixed(2);
+
+        for (var i = 0; i <  $scope.$parent.$parent.$parent.$parent.table.length; i++) {
+          if (checkRowCalculate($scope.$parent.$parent.$parent.$parent.table[i],["квартирный жилой"])) { 
+            $scope.calculateColumn($scope.$parent.$parent.$parent.$parent.table[i], "first" , lastKey, row[lastKey].second);
+          }
+        }
+
       } else {
-        total = scope.table[i][key].replace('-', "0");
+        row[lastKey].second = (row.CMP.replace("-","0") - result).toFixed(2);
+
+        for (var i = 0; i <  $scope.$parent.$parent.$parent.$parent.table.length; i++) {
+          if (checkRowCalculate($scope.$parent.$parent.$parent.$parent.table[i],["квартирный жилой"])) { 
+            $scope.calculateColumn($scope.$parent.$parent.$parent.$parent.table[i], "second" , lastKey, row[lastKey].second);
+          }
+        }
+
       }
-      continue;
-    }
-    let sum = scope.table[i][key].replace('-', "0");
-    if (scope.table[i] == Row ) {
-      sum = val.replace('-', "0");
-    } 
-    result = result + parseFloat(sum);
-  }
-  other[key] = (total - result).toFixed(2);
-};
 
 
-$scope.calculateRow = function (row,attrs,val) {
-
-
-  if (!checkRowCalculate(row, rowCalculatePercent) || this.$parent.$parent.$parent.$last == true) {return;}
-  let lastKey = Object.keys(row)[Object.keys(row).length - 1];
-  let result = 0;
-  for (var key in row){
-    if (key == "name" || key == "total" || key == "CMP" || key == lastKey) {continue;}
-
-    if (row[key]==row[attrs.mykey]) {
-      result = result + parseFloat(val.replace("-","0"));
-      continue;
-    }
-
-    if (attrs.dataval == "first") {
-      result = result + parseFloat((row[key].first).replace("-","0"));
-    } else {
-      result = result + parseFloat((row[key].second).replace("-","0"));
-    }
-  }
-
-  if (attrs.dataval == "first") {
-    row[lastKey].first = (row.total.replace("-","0") - result).toFixed(2);
-
-    for (var i = 0; i <  $scope.$parent.$parent.$parent.$parent.table.length; i++) {
-      if (checkRowCalculate($scope.$parent.$parent.$parent.$parent.table[i],["квартирный жилой"])) { 
-        $scope.calculateColumn($scope.$parent.$parent.$parent.$parent.table[i], "first" , lastKey, row[lastKey].second);
-      }
-    }
-
-  } else {
-    row[lastKey].second = (row.CMP.replace("-","0") - result).toFixed(2);
-
-    for (var i = 0; i <  $scope.$parent.$parent.$parent.$parent.table.length; i++) {
-      if (checkRowCalculate($scope.$parent.$parent.$parent.$parent.table[i],["квартирный жилой"])) { 
-        $scope.calculateColumn($scope.$parent.$parent.$parent.$parent.table[i], "second" , lastKey, row[lastKey].second);
-      }
-    }
-
-  }
-
-
-//VSEGOOO
-if (row == $scope.$parent.$parent.$parent.$parent.table[$scope.$parent.$parent.$parent.$parent.table.length-1]) {
-console.log('vsego');
-dataTable.getArrSummaYear(row);
-}
-//VSEGOOO
+// //VSEGOOO
+// if (row == $scope.$parent.$parent.$parent.$parent.table[$scope.$parent.$parent.$parent.$parent.table.length-1]) {
+// console.log('vsego');
+// dataTable.getArrSummaYear(row);
+// }
+// //VSEGOOO
 };
 
 
@@ -759,8 +850,8 @@ angular.module('jobPos').directive('myInputval', function($compile){
         }
       };
 
-},
-};
+    },
+  };
 });
 
 
@@ -935,42 +1026,50 @@ angular.module('jobPos').service('dataTableResources', function(){
     let oxyden;
     let coef = coefic;
     let summaPlusCoef = summa / (2.7 * 1267 * coef);
-    if (summaPlusCoef < 0.750) {
+    if (summaPlusCoef < 0.50) {   //до 0,5
       electric = "205";
       oil = "97";
       vapor = "200";
       compresAir = "3.9";
       waterHouse = "0.3";
       oxyden = "4400";
-    } else if (0.749 < summaPlusCoef && summaPlusCoef < 1.250) {
+    } else if (0.5 < summaPlusCoef && summaPlusCoef < 1.01) {  //до 1
       electric = "185";
       oil = "69";
       vapor = "185";
       compresAir = "3.2";
       waterHouse = "0.23";
       oxyden = "4400";
-    } else if (1.249 < summaPlusCoef && summaPlusCoef < 1.750) {
+    } else if (1.0 < summaPlusCoef && summaPlusCoef < 1.51) { //до 1,5
       electric = "140";
       oil = "52";
       vapor = "160";
       compresAir = "3.2";
       waterHouse = "0.2";
       oxyden = "4400";
-    } else if (1.749 < summaPlusCoef && summaPlusCoef < 2.250) {
+    } else if (1.5 < summaPlusCoef && summaPlusCoef < 2.01) { //до 2
       electric = "100";
       oil = "44";
       vapor = "140";
       compresAir = "2.6";
       waterHouse = "0.16";
       oxyden = "4400";
-    } else if (2.249 < summaPlusCoef) {
+    } else if (2.5 < summaPlusCoef) { //до 2,5
       electric = "70";
       oil = "40";
       vapor = "130";
       compresAir = "2.6";
       waterHouse = "0.16";
       oxyden = "4400";
-    } else{
+    } else if (3.0 < summaPlusCoef) { //до 3
+      electric = "70";
+      oil = "40";
+      vapor = "120";
+      compresAir = "2.3";
+      waterHouse = "0.16";
+      oxyden = "4400";
+
+    }  else{
       electric = "-";
       oil = "-";
       vapor = "-";
@@ -1022,7 +1121,7 @@ angular.module('jobPos').service('dataTableResources', function(){
       let electric = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].electric*1.02).toFixed(2);
       let oil = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oil*1.02).toFixed(2);
       let vapor = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].vapor*1.02).toFixed(2);
-      let compresAir = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].compresAir*1.03).toFixed(2);
+      let compresAir = parseInt(Math.ceil(this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].compresAir*1.03));
       let waterHouse = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].waterHouse*1.03).toFixed(2);
       let oxyden = (this.arrSummaYearResources[i].summa/(2.7*1267*coefficient)*this.arrSummaYearResources[i].oxyden*1.03).toFixed(2);
       this.objResourcesArr.push(new this.objResources(electric, oil, vapor, compresAir, waterHouse, oxyden, 

@@ -81,26 +81,17 @@
 
 						<div class="row">
 							<table class="table table-bordered table-hover table-condensed ">
-								<tr>
+								<tr >
+									<td>Data</td>
+									<td>Name</td>
+									<td>Prodolzitelnost</td>
+								</tr>
+								<tr ng-repeat="pos in arrPos track by $index">
 									<td>gggggg</td>
 									<td>gggggg</td>
 									<td>gggggg</td>
 								</tr>
-								<tr>
-									<td>gggggg</td>
-									<td>gggggg</td>
-									<td>gggggg</td>
-								</tr>
-								<tr>
-									<td>gggggg</td>
-									<td>gggggg</td>
-									<td>gggggg</td>
-								</tr>
-								<tr>
-									<td>gggggg</td>
-									<td>gggggg</td>
-									<td>gggggg</td>
-								</tr>
+
 							</table>
 						</div>
 
@@ -108,7 +99,7 @@
 
 							<div class="btn-group col-sm-offset-1">
 								<button class="btn btn-default btn-sm" ng-click="savePos()">Сохранить</button>
-								<button class="btn btn-default btn-sm" ng-click="loadPos">Загрузить</button>
+								<button class="btn btn-default btn-sm" ng-click="loadPos()">Загрузить</button>
 								<button class="btn btn-default btn-sm" >Выгрузить</button>
 								<button class="btn btn-default btn-sm">Удалить</button>
 								<button class="btn btn-default btn-sm" ng-click="delCookie()" >Удалить cookie</button>
